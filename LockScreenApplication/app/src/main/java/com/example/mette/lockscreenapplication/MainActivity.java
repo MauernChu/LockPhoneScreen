@@ -15,8 +15,6 @@ import android.widget.Toast;
 import com.example.mette.lockscreenapplication.data.Credentials;
 
 public class MainActivity extends Activity {
-
-
     Button unlock_screen;
     EditText enter_code;
     TextView display_success;
