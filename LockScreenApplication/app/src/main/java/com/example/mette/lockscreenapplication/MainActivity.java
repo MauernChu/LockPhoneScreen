@@ -12,10 +12,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mette.lockscreenapplication.data.Credentials;
+
 public class MainActivity extends Activity {
+
+
     Button unlock_screen;
     EditText enter_code;
     TextView display_success;
+
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +31,9 @@ public class MainActivity extends Activity {
             startService(new Intent(this,LockScreenService.class));
 
             setContentView(R.layout.activity_main);
+
+            enter_code = (EditText) findViewById(R.id.enter_code);
+            display_success = (TextView) findViewById(R.id.display_success);
         }
 
         /**
@@ -51,6 +59,13 @@ public class MainActivity extends Activity {
 
     public void unlockScreen(View view) {
         //Instead of using finish(), this totally destroys the process
-        android.os.Process.killProcess(android.os.Process.myPid());
+        String password = Credentials.password();
+        String enterCodeToString = enter_code.getText().toString();
+        if(enterCodeToString.equals(password)){
+            display_success.setText("Correct code!");
+            android.os.Process.killProcess(android.os.Process.myPid());
+        }else{
+            display_success.setText("Wrong code!");
+        }
     }
 }
