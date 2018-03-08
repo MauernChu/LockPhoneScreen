@@ -20,4 +20,9 @@ public abstract class Credentials {
         String password = "1234";
         return password;
     }
+
+    public static boolean lockPhone(){
+        Boolean lockPhone = false;
+        return lockPhone;
+    }
 }

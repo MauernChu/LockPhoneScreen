@@ -8,7 +8,6 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 
 public class LockScreenService extends Service {
-
     BroadcastReceiver receiver;
 
     @Override
@@ -19,12 +18,13 @@ public class LockScreenService extends Service {
     @Override
     @SuppressWarnings("deprecation")
     public void onCreate() {
+        //boolean testBoolean = MainActivity.setTestPhone();
+        //if(testBoolean == false){
         KeyguardManager.KeyguardLock key;
         KeyguardManager km = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
 
         //This is deprecated, but it is a simple way to disable the lockscreen in code
         key = km.newKeyguardLock("IN");
-
         key.disableKeyguard();
 
         //Start listening for the Screen On, Screen Off, and Boot completed actions
@@ -37,7 +37,8 @@ public class LockScreenService extends Service {
         registerReceiver(receiver, filter);
 
         super.onCreate();
-    }
+        }
+    //}
 
     @Override
     public void onDestroy() {

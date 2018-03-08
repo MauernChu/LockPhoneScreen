@@ -3,7 +3,6 @@ package com.example.mette.lockscreenapplication;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -13,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mette.lockscreenapplication.data.Credentials;
+import com.example.mette.lockscreenapplication.helper.SaveSharedPreference;
 import com.example.mette.lockscreenapplication.model.Phone;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,29 +21,47 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends Activity {
+
     EditText enter_code;
     TextView display_success;
 
-    DatabaseReference databasePhone;
+    String phoneId;
+    String phoneName;
+    boolean lockstatus;
 
     String code;
+
+    DatabaseReference databasePhone;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("test");
         super.onCreate(savedInstanceState);
 
         //Set up our Lockscreen
         makeFullScreen();
         startService(new Intent(this, LockScreenService.class));
 
-        setContentView(R.layout.activity_main);
+        if (SaveSharedPreference.getUserName(MainActivity.this).length() == 0) {
+            setContentView(R.layout.activity_main);
+        } else {
+
+        }
+
+
+        phoneId = "null";
+        phoneName = "Mette";
+        lockstatus = false;
+
+        // setTestPhone(phoneId, phoneName, lockstatus);
 
         databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
 
         enter_code = (EditText) findViewById(R.id.enter_code);
         display_success = (TextView) findViewById(R.id.display_success);
     }
+
 
     /**
      * A simple method that sets the screen to fullscreen.  It removes the Notifications bar,
@@ -60,25 +78,6 @@ public class MainActivity extends Activity {
                     .setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE);
         }
     }
-
-  /*  @Override
-    protected void onStart() {
-        super.onStart();
-        databasePhone.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot codeSnapShot : dataSnapshot.getChildren()) {
-                    code = codeSnapShot.getValue(String.class);
-                    display_success.setText(code);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }*/
 
     @Override
     public void onBackPressed() {
@@ -99,7 +98,11 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void addPhoneUnlock(){
+    public void shutDownApp() {
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
+    private void addPhoneUnlock() {
         String id = databasePhone.push().getKey();
         String name = "Mette";
         Boolean unlockPhone = true;
@@ -108,8 +111,29 @@ public class MainActivity extends Activity {
         databasePhone.child(id).setValue(unlockedPhone);
     }
 
-    public void shutDownApp(){
-        android.os.Process.killProcess(android.os.Process.myPid());
-    }
 
+    /*  @Override
+    protected void onStart() {
+        super.onStart();
+        databasePhone.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot codeSnapShot : dataSnapshot.getChildren()) {
+                    code = codeSnapShot.getValue(String.class);
+                    display_success.setText(code);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }*/
+
+  /*  public static Phone setTestPhone(String phoneId, String phoneName, boolean lockstatus){
+        Phone testPhone = new Phone(phoneId, phoneName, lockstatus);
+        Boolean lockPhone = testPhone.getLockStatus();
+        return Phone;
+    }*/
 }
