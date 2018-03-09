@@ -5,4 +5,7 @@
     <string name="button_unlock">unlocking screen</string>
     <string name="text_password">Enter password</string>
     <string name="text_if_success">Tell if the key was entered correct</string>
+    <string name="title_activity_enter_code">EnterCodeActivity</string>
+    <string name="button_entercodepage">Unlock</string>
+    <string name="title_activity_login">LoginActivity</string>
 </resources>

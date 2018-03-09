@@ -6,33 +6,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.mette.lockscreenapplication.data.Credentials;
 import com.example.mette.lockscreenapplication.helper.SaveSharedPreference;
-import com.example.mette.lockscreenapplication.model.Phone;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends Activity {
-
-    EditText enter_code;
-    TextView display_success;
-
-    String phoneId;
-    String phoneName;
-    boolean lockstatus;
-
-    String code;
-
-    DatabaseReference databasePhone;
-
+    DatabaseReference databaseHomeKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +25,8 @@ public class MainActivity extends Activity {
         makeFullScreen();
         startService(new Intent(this, LockScreenService.class));
 
+        databaseHomeKey = FirebaseDatabase.getInstance().getReference("HomeKey");
+
         if (SaveSharedPreference.getUserName(MainActivity.this).length() == 0) {
             setContentView(R.layout.activity_main);
         } else {
@@ -50,16 +34,20 @@ public class MainActivity extends Activity {
         }
 
 
-        phoneId = "null";
-        phoneName = "Mette";
-        lockstatus = false;
 
-        // setTestPhone(phoneId, phoneName, lockstatus);
-
-        databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
-
-        enter_code = (EditText) findViewById(R.id.enter_code);
-        display_success = (TextView) findViewById(R.id.display_success);
+      /*  HomeWatcher mHomeWatcher = new HomeWatcher(this);
+        mHomeWatcher.setOnHomePressedListener(new OnHomePressedListener() {
+            @Override
+            public void onHomePressed() {
+                String idHomeKey = databaseHomeKey.push().getKey();
+                Boolean homeKeyPushed = true;
+                databaseHomeKey.child(idHomeKey).setValue(homeKeyPushed);
+            }
+            @Override
+            public void onHomeLongPressed() {
+            }
+        });
+        mHomeWatcher.startWatch();*/
     }
 
 
@@ -84,32 +72,24 @@ public class MainActivity extends Activity {
         return; //Do nothing!
     }
 
-    public void unlockScreen(View view) throws InterruptedException {
-        //Instead of using finish(), this totally destroys the process
-        String password = Credentials.password();
-        String enterCodeToString = enter_code.getText().toString();
-        if (enterCodeToString.equals(password)) {
-            display_success.setText("Correct code!");
-            addPhoneUnlock();
-            Thread.sleep(5);
-            shutDownApp();
-        } else {
-            display_success.setText("wrong code!");
-        }
+    public void goToEnterCodeActivity(View view) throws InterruptedException {
+        Intent intent = new Intent(this, EnterCodeActivity.class);
+        startActivity(intent);
     }
+
 
     public void shutDownApp() {
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 
-    private void addPhoneUnlock() {
+  /*  private void addPhoneUnlock() {
         String id = databasePhone.push().getKey();
         String name = "Mette";
         Boolean unlockPhone = true;
 
         Phone unlockedPhone = new Phone(id, name, unlockPhone);
         databasePhone.child(id).setValue(unlockedPhone);
-    }
+    }*/
 
 
     /*  @Override

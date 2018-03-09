@@ -10,6 +10,7 @@ import android.os.IBinder;
 public class LockScreenService extends Service {
     BroadcastReceiver receiver;
 
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
