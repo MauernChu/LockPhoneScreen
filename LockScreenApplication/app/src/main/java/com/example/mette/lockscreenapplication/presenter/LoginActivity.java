@@ -24,11 +24,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import static com.example.mette.lockscreenapplication.helper.Utilities.shutDownApp;
+
 public class LoginActivity extends Activity {
     EditText editPhoneName;
+    EditText editEmail;
+    EditText editPassword;
     Button button_login;
+    Boolean phoneLockStatus;
 
     DatabaseReference databasePhone;
+    DatabaseReference firebasePhoneLockStatus;
     private FirebaseAuth firebaseAuthLogin;
     private ProgressDialog progressDialog;
 
@@ -40,13 +46,16 @@ public class LoginActivity extends Activity {
         makeFullScreen();
         startService(new Intent(this, LockScreenService.class));
 
+        firebasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
+
         firebaseAuthLogin = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);
         databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
 
         editPhoneName = (EditText) findViewById(R.id.phonename);
+        editEmail = (EditText) findViewById(R.id.Email);
+        editPassword = (EditText) findViewById(R.id.Password);
         button_login = (Button) findViewById(R.id.button_login);
-
     }
 
     public void makeFullScreen() {
@@ -74,11 +83,13 @@ public class LoginActivity extends Activity {
 
     public void addPhoneToDatabase() {
         final String phoneName = editPhoneName.getText().toString().trim();
-        String defaultPassword = "password";
-        String defaultEmail = "test@test.dk";
+        String email = editEmail.getText().toString().trim();
+        String password = editPassword.getText().toString().trim();
+       // String defaultPassword = "password";
+       // String defaultEmail = "test@test.dk";
         progressDialog.setMessage("Signing up...");
         progressDialog.show();
-        firebaseAuthLogin.createUserWithEmailAndPassword(defaultEmail, defaultPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        firebaseAuthLogin.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
@@ -101,6 +112,22 @@ public class LoginActivity extends Activity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
             }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        firebasePhoneLockStatus.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                phoneLockStatus = dataSnapshot.getValue(Boolean.class);
+                if (phoneLockStatus.equals(false)) {
+                    shutDownApp();
+                }
+            }
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {

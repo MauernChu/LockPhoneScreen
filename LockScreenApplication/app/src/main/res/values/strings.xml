@@ -12,5 +12,7 @@
 
     <string name="title_activity_login">LoginActivity</string>
     <string name="button_login">Login</string>
-    <string name="text_entername">Phone Name</string>
+    <string name="text_entername">Name</string>
+    <string name="text_enter_email">Email</string>
+    <string name="text_enter_password">password</string>
 </resources>

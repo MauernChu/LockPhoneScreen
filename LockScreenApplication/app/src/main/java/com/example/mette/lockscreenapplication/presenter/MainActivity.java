@@ -22,6 +22,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.mette.lockscreenapplication.helper.Utilities.shutDownApp;
+
 public class MainActivity extends Activity {
     //Temporary Database reference for storing homekey pushed on the screen
     DatabaseReference databaseHomeKey;
@@ -122,10 +124,6 @@ public class MainActivity extends Activity {
     @Override
     public void onBackPressed() {
         return; //Do nothing!
-    }
-
-    public void shutDownApp() {
-        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
 

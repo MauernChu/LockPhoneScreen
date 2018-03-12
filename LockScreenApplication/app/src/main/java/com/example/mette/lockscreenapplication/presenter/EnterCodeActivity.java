@@ -10,10 +10,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.mette.lockscreenapplication.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import static com.example.mette.lockscreenapplication.helper.Utilities.shutDownApp;
 
 public class EnterCodeActivity extends Activity {
     EditText enter_code;
     TextView display_success;
+    Boolean phoneLockStatus;
+
+    DatabaseReference firebasePhoneLockStatus;
 
 
     @Override
@@ -22,6 +32,8 @@ public class EnterCodeActivity extends Activity {
         setContentView(R.layout.activity_enter_code);
 
         makeFullScreen();
+
+        firebasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
 
         enter_code = (EditText) findViewById(R.id.enter_code);
         display_success = (TextView) findViewById(R.id.display_success);
@@ -54,13 +66,28 @@ public class EnterCodeActivity extends Activity {
         }*/
     }
 
-    public void shutDownApp() {
-        android.os.Process.killProcess(android.os.Process.myPid());
-    }
-
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        firebasePhoneLockStatus.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                phoneLockStatus = dataSnapshot.getValue(Boolean.class);
+                if (phoneLockStatus.equals(false)) {
+                    shutDownApp();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }
