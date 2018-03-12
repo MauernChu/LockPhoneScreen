@@ -1,4 +1,4 @@
-package com.example.mette.lockscreenapplication.helper;
+package com.aau.thesis.lockscreenapplication.helper;
 
 /**
  * This interface contains classes that are necessary on order to use the Home watcher

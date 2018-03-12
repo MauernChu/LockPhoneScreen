@@ -1,4 +1,4 @@
-package com.example.mette.lockscreenapplication.helper;
+package com.aau.thesis.lockscreenapplication.helper;
 
 /**
  * Created by mette on 12/03/2018.

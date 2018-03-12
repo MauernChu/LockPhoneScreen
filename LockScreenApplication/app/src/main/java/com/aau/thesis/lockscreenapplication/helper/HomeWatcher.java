@@ -1,4 +1,4 @@
-package com.example.mette.lockscreenapplication.helper;
+package com.aau.thesis.lockscreenapplication.helper;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

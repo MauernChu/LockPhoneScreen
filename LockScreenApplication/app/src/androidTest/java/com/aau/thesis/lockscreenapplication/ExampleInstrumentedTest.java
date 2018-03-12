@@ -1,4 +1,4 @@
-package com.example.mette.lockscreenapplication;
+package com.aau.thesis.lockscreenapplication;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

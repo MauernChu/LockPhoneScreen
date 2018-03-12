@@ -1,4 +1,4 @@
-package com.example.mette.lockscreenapplication.presenter;
+package com.aau.thesis.lockscreenapplication.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,14 +9,14 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.mette.lockscreenapplication.R;
+import com.aau.thesis.lockscreenapplication.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import static com.example.mette.lockscreenapplication.helper.Utilities.shutDownApp;
+import static com.aau.thesis.lockscreenapplication.helper.Utilities.shutDownApp;
 
 public class EnterCodeActivity extends Activity {
     EditText enter_code;

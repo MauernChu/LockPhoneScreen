@@ -1,4 +1,4 @@
-package com.example.mette.lockscreenapplication.model;
+package com.aau.thesis.lockscreenapplication.model;
 
 import java.sql.Date;
 import java.util.List;

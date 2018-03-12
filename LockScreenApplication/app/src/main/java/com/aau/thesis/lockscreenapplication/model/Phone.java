@@ -1,4 +1,4 @@
-package com.example.mette.lockscreenapplication.model;
+package com.aau.thesis.lockscreenapplication.model;
 
 /**
  * Created by mette on 06/03/2018.

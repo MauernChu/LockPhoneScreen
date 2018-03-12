@@ -1,4 +1,4 @@
-package com.example.mette.lockscreenapplication;
+package com.aau.thesis.lockscreenapplication;
 
 import org.junit.Test;
 

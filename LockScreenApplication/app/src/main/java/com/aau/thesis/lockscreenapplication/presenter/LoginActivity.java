@@ -1,4 +1,4 @@
-package com.example.mette.lockscreenapplication.presenter;
+package com.aau.thesis.lockscreenapplication.presenter;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -11,9 +11,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.mette.lockscreenapplication.R;
-import com.example.mette.lockscreenapplication.helper.LockScreenService;
-import com.example.mette.lockscreenapplication.model.Phone;
+import com.aau.thesis.lockscreenapplication.R;
+import com.aau.thesis.lockscreenapplication.helper.LockScreenService;
+import com.aau.thesis.lockscreenapplication.model.Phone;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -24,7 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import static com.example.mette.lockscreenapplication.helper.Utilities.shutDownApp;
+import static com.aau.thesis.lockscreenapplication.helper.Utilities.shutDownApp;
 
 public class LoginActivity extends Activity {
     EditText editPhoneName;

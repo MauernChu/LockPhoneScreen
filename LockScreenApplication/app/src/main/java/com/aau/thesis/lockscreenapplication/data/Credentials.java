@@ -1,4 +1,4 @@
-package com.example.mette.lockscreenapplication.data;
+package com.aau.thesis.lockscreenapplication.data;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;

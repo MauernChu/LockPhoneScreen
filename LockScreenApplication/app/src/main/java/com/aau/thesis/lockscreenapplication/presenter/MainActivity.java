@@ -1,4 +1,4 @@
-package com.example.mette.lockscreenapplication.presenter;
+package com.aau.thesis.lockscreenapplication.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,11 +7,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.example.mette.lockscreenapplication.R;
-import com.example.mette.lockscreenapplication.helper.HomeWatcher;
-import com.example.mette.lockscreenapplication.helper.LockScreenService;
-import com.example.mette.lockscreenapplication.helper.OnHomePressedListener;
-import com.example.mette.lockscreenapplication.model.HomeKey;
+import com.aau.thesis.lockscreenapplication.R;
+import com.aau.thesis.lockscreenapplication.helper.HomeWatcher;
+import com.aau.thesis.lockscreenapplication.helper.LockScreenService;
+import com.aau.thesis.lockscreenapplication.helper.OnHomePressedListener;
+import com.aau.thesis.lockscreenapplication.model.HomeKey;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,7 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.mette.lockscreenapplication.helper.Utilities.shutDownApp;
+import static com.aau.thesis.lockscreenapplication.helper.Utilities.shutDownApp;
 
 public class MainActivity extends Activity {
     //Temporary Database reference for storing homekey pushed on the screen
