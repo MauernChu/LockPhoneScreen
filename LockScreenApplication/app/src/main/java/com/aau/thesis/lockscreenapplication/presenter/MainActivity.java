@@ -95,6 +95,10 @@ public class MainActivity extends Activity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 phoneLockStatus = dataSnapshot.getValue(Boolean.class);
                 if (phoneLockStatus.equals(false)) {
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("EXIT", true);
+                    startActivity(intent);
                     shutDownApp();
                 }
             }
