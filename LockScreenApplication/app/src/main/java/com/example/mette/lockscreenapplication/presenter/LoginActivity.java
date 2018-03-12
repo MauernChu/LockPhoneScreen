@@ -74,7 +74,7 @@ public class LoginActivity extends Activity {
 
     public void addPhoneToDatabase() {
         final String phoneName = editPhoneName.getText().toString().trim();
-        String defaultPassword = "TestName";
+        String defaultPassword = "password";
         String defaultEmail = "test@test.dk";
         progressDialog.setMessage("Signing up...");
         progressDialog.show();

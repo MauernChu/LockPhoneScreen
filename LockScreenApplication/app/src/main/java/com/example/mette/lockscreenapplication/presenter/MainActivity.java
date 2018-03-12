@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -14,8 +13,11 @@ import com.example.mette.lockscreenapplication.helper.LockScreenService;
 import com.example.mette.lockscreenapplication.helper.OnHomePressedListener;
 import com.example.mette.lockscreenapplication.model.HomeKey;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +26,9 @@ public class MainActivity extends Activity {
     //Temporary Database reference for storing homekey pushed on the screen
     DatabaseReference databaseHomeKey;
     List<Boolean> homeLockList;
+    Boolean phoneLockStatus;
 
-
+    DatabaseReference firebasePhoneLockStatus;
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
 
@@ -33,7 +36,10 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Check if user has locked in or not, if not the Loginactivity will open.
+
+        firebasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
+        //Check if user has locked in or not, if not the Login-activity will open.
+
         firebaseAuth = FirebaseAuth.getInstance();
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -41,11 +47,12 @@ public class MainActivity extends Activity {
                 if (firebaseAuth.getCurrentUser() == null) {
                     Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
                     startActivity(loginIntent);
-                }else{
+                } else {
                     setContentView(R.layout.activity_main);
                 }
             }
         };
+
 
         // Set up the Lockscreen by setting the screen to full
         makeFullScreen();
@@ -78,11 +85,25 @@ public class MainActivity extends Activity {
     protected void onStart() {
         super.onStart();
         firebaseAuth.addAuthStateListener(authStateListener);
+        firebasePhoneLockStatus.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                phoneLockStatus = dataSnapshot.getValue(Boolean.class);
+                if (phoneLockStatus.equals(false)) {
+                    shutDownApp();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 
-     //This method sets the screen to fullscreen. It removes the Notifications bar,
-     //the Actionbar and the virtual keys (if they are on the phone)
+    //This method sets the screen to fullscreen. It removes the Notifications bar,
+    //the Actionbar and the virtual keys (if they are on the phone)
     public void makeFullScreen() {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -103,8 +124,12 @@ public class MainActivity extends Activity {
         return; //Do nothing!
     }
 
+    public void shutDownApp() {
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
 
-     //Method for entering the activity for entering the code to unlock.
+
+    //Method for entering the activity for entering the code to unlock.
     public void goToEnterCodeActivity(View view) throws InterruptedException {
         Intent intent = new Intent(this, EnterCodeActivity.class);
         startActivity(intent);
