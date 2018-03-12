@@ -23,9 +23,13 @@ public class EnterCodeActivity extends Activity {
     TextView display_success;
     Boolean phoneLockStatus;
     String unlockCode;
+    String totalScoreString;
+    int totalScoreInt;
+    int newTotalScoreInt;
 
-    DatabaseReference firebasePhoneLockStatus;
-    DatabaseReference firebaseCode;
+    DatabaseReference databasePhoneLockStatus;
+    DatabaseReference databaseCode;
+    DatabaseReference databaseTotal;
 
 
     @Override
@@ -35,8 +39,9 @@ public class EnterCodeActivity extends Activity {
 
         makeFullScreen();
 
-        firebasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
-        firebaseCode = FirebaseDatabase.getInstance().getReference("Code");
+        databasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
+        databaseCode = FirebaseDatabase.getInstance().getReference("Code");
+        databaseTotal = FirebaseDatabase.getInstance().getReference("Total");
 
         enter_code = (EditText) findViewById(R.id.enter_code);
         display_success = (TextView) findViewById(R.id.display_success);
@@ -64,7 +69,7 @@ public class EnterCodeActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        firebasePhoneLockStatus.addValueEventListener(new ValueEventListener() {
+        databasePhoneLockStatus.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 phoneLockStatus = dataSnapshot.getValue(Boolean.class);
@@ -83,11 +88,24 @@ public class EnterCodeActivity extends Activity {
             }
         });
 
-        firebaseCode.addValueEventListener(new ValueEventListener() {
+        databaseCode.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 unlockCode = dataSnapshot.getValue(String.class);
 
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        databaseTotal.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                totalScoreString = dataSnapshot.getValue(String.class);
+                totalScoreInt = Integer.parseInt(totalScoreString);
             }
 
             @Override
@@ -101,19 +119,24 @@ public class EnterCodeActivity extends Activity {
         checkEnteredCode(unlockCode);
     }
 
-    public void checkEnteredCode(String databaseCode){
+    public void checkEnteredCode(String databaseCode) {
         String unlockCode = enter_code.getText().toString().trim();
-        if(unlockCode.equals(databaseCode)){
+        if (unlockCode.equals(databaseCode)) {
+            addToTotalScore();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("EXIT", true);
             startActivity(intent);
             //shutDownApp();
             //System.exit(1);
-        }else{
+        } else {
             display_success.setText("wrong code!");
         }
     }
 
-
+    public void addToTotalScore(){
+        newTotalScoreInt = totalScoreInt + 1;
+        String newTotalScoreString = Integer.toString(newTotalScoreInt);
+        databaseTotal.setValue(newTotalScoreString);
+    }
 }
