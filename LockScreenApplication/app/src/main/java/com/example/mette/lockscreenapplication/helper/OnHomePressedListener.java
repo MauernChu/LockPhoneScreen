@@ -1,7 +1,8 @@
 package com.example.mette.lockscreenapplication.helper;
 
 /**
- * Created by mette on 08/03/2018.
+ * This interface contains classes that are necessary on order to use the Home watcher
+ * It is used in the MainActivity
  */
 
 public interface OnHomePressedListener {

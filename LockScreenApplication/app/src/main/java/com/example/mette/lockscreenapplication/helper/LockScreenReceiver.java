@@ -1,8 +1,11 @@
-package com.example.mette.lockscreenapplication;
+package com.example.mette.lockscreenapplication.helper;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
+import com.example.mette.lockscreenapplication.presenter.LoginActivity;
+import com.example.mette.lockscreenapplication.presenter.MainActivity;
 
 
 public class LockScreenReceiver extends BroadcastReceiver {

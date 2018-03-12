@@ -1,4 +1,4 @@
-package com.example.mette.lockscreenapplication;
+package com.example.mette.lockscreenapplication.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,22 +9,11 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.mette.lockscreenapplication.data.Credentials;
-import com.example.mette.lockscreenapplication.model.Phone;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.example.mette.lockscreenapplication.R;
 
 public class EnterCodeActivity extends Activity {
     EditText enter_code;
     TextView display_success;
-
-    String phoneId;
-    String phoneName;
-    boolean lockstatus;
-
-    String code;
-
-    DatabaseReference databasePhone;
 
 
     @Override
@@ -33,8 +22,6 @@ public class EnterCodeActivity extends Activity {
         setContentView(R.layout.activity_enter_code);
 
         makeFullScreen();
-
-        databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
 
         enter_code = (EditText) findViewById(R.id.enter_code);
         display_success = (TextView) findViewById(R.id.display_success);
@@ -55,7 +42,7 @@ public class EnterCodeActivity extends Activity {
 
     public void unlockScreen(View view) throws InterruptedException {
         //Instead of using finish(), this totally destroys the process
-        String password = Credentials.password();
+       /* String password = Credentials.password();
         String enterCodeToString = enter_code.getText().toString();
         if (enterCodeToString.equals(password)) {
             display_success.setText("Correct code!");
@@ -64,20 +51,11 @@ public class EnterCodeActivity extends Activity {
             shutDownApp();
         } else {
             display_success.setText("wrong code!");
-        }
+        }*/
     }
 
     public void shutDownApp() {
         android.os.Process.killProcess(android.os.Process.myPid());
-    }
-
-    private void addPhoneUnlock() {
-        String id = databasePhone.push().getKey();
-        String name = "Mette";
-        Boolean unlockPhone = true;
-
-        Phone unlockedPhone = new Phone(id, name, unlockPhone);
-        databasePhone.child(id).setValue(unlockedPhone);
     }
 
     @Override

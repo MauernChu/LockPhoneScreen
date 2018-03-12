@@ -7,12 +7,10 @@ package com.example.mette.lockscreenapplication.model;
 public class Phone {
     String phoneId;
     String phoneName;
-    Boolean lockStatus;
 
-    public Phone(String phoneId, String phoneName, Boolean lockStatus) {
+    public Phone(String phoneId, String phoneName) {
         this.phoneId = phoneId;
         this.phoneName = phoneName;
-        this.lockStatus = lockStatus;
     }
 
     public String getPhoneId() {
@@ -29,13 +27,5 @@ public class Phone {
 
     public void setPhoneName(String phoneName) {
         this.phoneName = phoneName;
-    }
-
-    public Boolean getLockStatus() {
-        return lockStatus;
-    }
-
-    public void setLockStatus(Boolean lockStatus) {
-        this.lockStatus = lockStatus;
     }
 }

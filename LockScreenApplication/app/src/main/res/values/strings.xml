@@ -1,11 +1,16 @@
 <resources>
-    <string name="app_name">SimpleScreen</string>
+    <string name="app_name">LockScreen</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="button_unlock">unlocking screen</string>
+    <string name="button_entercodepage">Unlock</string>
+
+
+    <string name="title_activity_enter_code">EnterCodeActivity</string>
     <string name="text_password">Enter password</string>
     <string name="text_if_success">Tell if the key was entered correct</string>
-    <string name="title_activity_enter_code">EnterCodeActivity</string>
-    <string name="button_entercodepage">Unlock</string>
+    <string name="button_unlock">unlocking screen</string>
+
     <string name="title_activity_login">LoginActivity</string>
+    <string name="button_login">Login</string>
+    <string name="text_entername">Phone Name</string>
 </resources>
