@@ -38,6 +38,9 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getIntent().getBooleanExtra("EXIT", false)) {
+            finish();
+        }
 
         firebasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
         //Check if user has locked in or not, if not the Login-activity will open.
@@ -130,6 +133,8 @@ public class MainActivity extends Activity {
     //Method for entering the activity for entering the code to unlock.
     public void goToEnterCodeActivity(View view) throws InterruptedException {
         Intent intent = new Intent(this, EnterCodeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("EXIT", true);
         startActivity(intent);
     }
 }

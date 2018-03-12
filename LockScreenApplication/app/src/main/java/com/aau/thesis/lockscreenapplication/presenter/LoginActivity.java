@@ -42,6 +42,9 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        if (getIntent().getBooleanExtra("EXIT", false)) {
+            finish();
+        }
 
         makeFullScreen();
         startService(new Intent(this, LockScreenService.class));
@@ -78,6 +81,8 @@ public class LoginActivity extends Activity {
     public void goMainActivity(View view) throws InterruptedException {
         addPhoneToDatabase();
         Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("EXIT", true);
         startActivity(intent);
     }
 
@@ -85,8 +90,6 @@ public class LoginActivity extends Activity {
         final String phoneName = editPhoneName.getText().toString().trim();
         String email = editEmail.getText().toString().trim();
         String password = editPassword.getText().toString().trim();
-       // String defaultPassword = "password";
-       // String defaultEmail = "test@test.dk";
         progressDialog.setMessage("Signing up...");
         progressDialog.show();
         firebaseAuthLogin.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -98,6 +101,7 @@ public class LoginActivity extends Activity {
                     DatabaseReference databaseCurrentUser = databasePhone.child(phoneId);
                     databaseCurrentUser.child("Name").setValue(dbPhone.getPhoneName());
                     Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                    mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(mainIntent);
                 }
             }

@@ -22,8 +22,10 @@ public class EnterCodeActivity extends Activity {
     EditText enter_code;
     TextView display_success;
     Boolean phoneLockStatus;
+    String unlockCode;
 
     DatabaseReference firebasePhoneLockStatus;
+    DatabaseReference firebaseCode;
 
 
     @Override
@@ -34,6 +36,7 @@ public class EnterCodeActivity extends Activity {
         makeFullScreen();
 
         firebasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
+        firebaseCode = FirebaseDatabase.getInstance().getReference("Code");
 
         enter_code = (EditText) findViewById(R.id.enter_code);
         display_success = (TextView) findViewById(R.id.display_success);
@@ -50,20 +53,6 @@ public class EnterCodeActivity extends Activity {
             this.getWindow().getDecorView()
                     .setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE);
         }
-    }
-
-    public void unlockScreen(View view) throws InterruptedException {
-        //Instead of using finish(), this totally destroys the process
-       /* String password = Credentials.password();
-        String enterCodeToString = enter_code.getText().toString();
-        if (enterCodeToString.equals(password)) {
-            display_success.setText("Correct code!");
-            addPhoneUnlock();
-            //Thread.sleep(5);
-            shutDownApp();
-        } else {
-            display_success.setText("wrong code!");
-        }*/
     }
 
     @Override
@@ -89,5 +78,38 @@ public class EnterCodeActivity extends Activity {
 
             }
         });
+
+        firebaseCode.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                unlockCode = dataSnapshot.getValue(String.class);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
+
+    public void unlockScreen(View view) throws InterruptedException {
+        checkEnteredCode(unlockCode);
+    }
+
+    public void checkEnteredCode(String databaseCode){
+        String unlockCode = enter_code.getText().toString().trim();
+        if(unlockCode.equals(databaseCode)){
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("EXIT", true);
+            startActivity(intent);
+            //shutDownApp();
+            //System.exit(1);
+        }else{
+            display_success.setText("wrong code!");
+        }
+    }
+
+
 }
