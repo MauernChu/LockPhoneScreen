@@ -5,12 +5,15 @@ package com.aau.thesis.lockscreenapplication.model;
  */
 
 public class Phone {
-    String phoneId;
-    String phoneName;
+    private String phoneId;
+    private String phoneName;
+    private UnlockPhoneIdentifier unlockPhoneIdentifier;
+
 
     public Phone(String phoneId, String phoneName) {
         this.phoneId = phoneId;
         this.phoneName = phoneName;
+        this.unlockPhoneIdentifier = unlockPhoneIdentifier;
     }
 
     public String getPhoneId() {
@@ -27,5 +30,13 @@ public class Phone {
 
     public void setPhoneName(String phoneName) {
         this.phoneName = phoneName;
+    }
+
+    public UnlockPhoneIdentifier getUnlockPhoneIdentifier() {
+        return unlockPhoneIdentifier;
+    }
+
+    public void setUnlockPhoneIdentifier(UnlockPhoneIdentifier unlockPhoneIdentifier) {
+        this.unlockPhoneIdentifier = unlockPhoneIdentifier;
     }
 }

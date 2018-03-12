@@ -2,21 +2,21 @@ package com.aau.thesis.lockscreenapplication.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.aau.thesis.lockscreenapplication.R;
+import com.aau.thesis.lockscreenapplication.model.UnlockPhoneIdentifier;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import static com.aau.thesis.lockscreenapplication.helper.Utilities.shutDownApp;
+import static com.aau.thesis.lockscreenapplication.helper.Utilities.makeFullScreen;
 
 public class EnterCodeActivity extends Activity {
     EditText enter_code;
@@ -26,10 +26,18 @@ public class EnterCodeActivity extends Activity {
     String totalScoreString;
     int totalScoreInt;
     int newTotalScoreInt;
+    String phoneId;
+    String enteredCodeIdentifierID;
+    String timestamp;
 
+    String enteredCodeIdentifier;
+
+    private FirebaseAuth firebaseAuth;
     DatabaseReference databasePhoneLockStatus;
     DatabaseReference databaseCode;
     DatabaseReference databaseTotal;
+    DatabaseReference databasePhone;
+    DatabaseReference databaseUnlockIdentifier;
 
 
     @Override
@@ -37,28 +45,22 @@ public class EnterCodeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_code);
 
-        makeFullScreen();
+        makeFullScreen(EnterCodeActivity.this);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        String phoneId = firebaseAuth.getCurrentUser().getUid();
 
         databasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
         databaseCode = FirebaseDatabase.getInstance().getReference("Code");
         databaseTotal = FirebaseDatabase.getInstance().getReference("Total");
+        databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
+        databaseUnlockIdentifier = FirebaseDatabase.getInstance().getReference("UnlockIdentifier").child(phoneId);
 
         enter_code = (EditText) findViewById(R.id.enter_code);
         display_success = (TextView) findViewById(R.id.display_success);
 
     }
 
-    public void makeFullScreen() {
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        if (Build.VERSION.SDK_INT < 19) { //View.SYSTEM_UI_FLAG_IMMERSIVE is only on API 19+
-            this.getWindow().getDecorView()
-                    .setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-        } else {
-            this.getWindow().getDecorView()
-                    .setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE);
-        }
-    }
 
     @Override
     public void onBackPressed() {
@@ -78,7 +80,6 @@ public class EnterCodeActivity extends Activity {
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra("EXIT", true);
                     startActivity(intent);
-                    shutDownApp();
                 }
             }
 
@@ -123,15 +124,23 @@ public class EnterCodeActivity extends Activity {
         String unlockCode = enter_code.getText().toString().trim();
         if (unlockCode.equals(databaseCode)) {
             addToTotalScore();
+            addUnlockPhoneIdentifier();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("EXIT", true);
             startActivity(intent);
-            //shutDownApp();
-            //System.exit(1);
         } else {
             display_success.setText("wrong code!");
         }
+    }
+
+    public void addUnlockPhoneIdentifier(){
+        phoneId = firebaseAuth.getCurrentUser().getUid();
+        enteredCodeIdentifierID = databaseUnlockIdentifier.push().getKey();
+        enteredCodeIdentifier = "Entered Code";
+        timestamp = "1520853486553";
+        UnlockPhoneIdentifier unlockPhoneIdentifier = new UnlockPhoneIdentifier(enteredCodeIdentifierID, enteredCodeIdentifier, timestamp);
+        databaseUnlockIdentifier.setValue(unlockPhoneIdentifier);
     }
 
     public void addToTotalScore(){

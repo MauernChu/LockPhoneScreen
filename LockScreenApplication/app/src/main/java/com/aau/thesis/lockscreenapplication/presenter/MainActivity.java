@@ -2,16 +2,13 @@ package com.aau.thesis.lockscreenapplication.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 
 import com.aau.thesis.lockscreenapplication.R;
 import com.aau.thesis.lockscreenapplication.helper.HomeWatcher;
 import com.aau.thesis.lockscreenapplication.helper.LockScreenService;
 import com.aau.thesis.lockscreenapplication.helper.OnHomePressedListener;
-import com.aau.thesis.lockscreenapplication.model.HomeKey;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,15 +19,18 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.aau.thesis.lockscreenapplication.helper.Utilities.shutDownApp;
+import static com.aau.thesis.lockscreenapplication.helper.Utilities.makeFullScreen;
 
 public class MainActivity extends Activity {
-    //Temporary Database reference for storing homekey pushed on the screen
+    //Temporary Database reference for storing homekey pushed on the screen + list to store values
     DatabaseReference databaseHomeKey;
     List<Boolean> homeLockList;
+
+    //Instans of databasereference + boolean for storing the PhoneLockStatus
+    DatabaseReference firebasePhoneLockStatus;
     Boolean phoneLockStatus;
 
-    DatabaseReference firebasePhoneLockStatus;
+    //Used for creating phoneUser + checking if the users is already locked in
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
 
@@ -38,13 +38,17 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //This method is called whenever the code for closing the app is being called in order to
+        //all activities in the app.
         if (getIntent().getBooleanExtra("EXIT", false)) {
             finish();
         }
 
+        //Instans of the databasereference for getting Boolean value from the PhoneLockStatus
         firebasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
-        //Check if user has locked in or not, if not the Login-activity will open.
 
+        //Check if user has locked in or not, if not the Login-activity will open.
         firebaseAuth = FirebaseAuth.getInstance();
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -54,42 +58,45 @@ public class MainActivity extends Activity {
                     startActivity(loginIntent);
                 } else {
                     setContentView(R.layout.activity_main);
+
+                    // Set up the Lockscreen by setting the screen to full
+                    makeFullScreen(MainActivity.this);
+
+                    //Making an instance of the Service for listening to phone startup after booted
+                    startService(new Intent(getApplicationContext(), LockScreenService.class));
+
+                    //Logging if the Homekey is pressed. Stores this in the database
+                    databaseHomeKey = FirebaseDatabase.getInstance().getReference("UnlockPhoneIdentifier");
+                    homeLockList = new ArrayList<>();
+                    HomeWatcher MainHomeWatcher = new HomeWatcher(getApplicationContext());
+                    MainHomeWatcher.setOnHomePressedListener(new OnHomePressedListener() {
+                        @Override
+                        public void onHomePressed() {
+                            homeLockList.clear();
+                            String idHomeKey = databaseHomeKey.push().getKey();
+                            Boolean homeKeyPushed = true;
+                            homeLockList.add(homeKeyPushed);
+                           // UnlockPhoneIdentifier homeKey = new UnlockPhoneIdentifier(homeLockList, idHomeKey);
+                           // databaseHomeKey.child(idHomeKey).setValue(homeKey);
+                        }
+
+                        @Override
+                        public void onHomeLongPressed() {
+                        }
+                    });
+                    MainHomeWatcher.startWatch();
                 }
             }
         };
 
-
-        // Set up the Lockscreen by setting the screen to full
-        makeFullScreen();
-        //Making an instance of the Service for listening to phone startup after booted
-        startService(new Intent(this, LockScreenService.class));
-
-        //Logging the if the Homekey is pressed. Stores this in the database
-        databaseHomeKey = FirebaseDatabase.getInstance().getReference("HomeKey");
-        homeLockList = new ArrayList<>();
-        HomeWatcher MainHomeWatcher = new HomeWatcher(this);
-        MainHomeWatcher.setOnHomePressedListener(new OnHomePressedListener() {
-            @Override
-            public void onHomePressed() {
-                homeLockList.clear();
-                String idHomeKey = databaseHomeKey.push().getKey();
-                Boolean homeKeyPushed = true;
-                homeLockList.add(homeKeyPushed);
-                HomeKey homeKey = new HomeKey(homeLockList, idHomeKey);
-                databaseHomeKey.child(idHomeKey).setValue(homeKey);
-            }
-
-            @Override
-            public void onHomeLongPressed() {
-            }
-        });
-        MainHomeWatcher.startWatch();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         firebaseAuth.addAuthStateListener(authStateListener);
+
+        //Close the app if PhoneLockStatus returns false
         firebasePhoneLockStatus.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -99,32 +106,18 @@ public class MainActivity extends Activity {
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra("EXIT", true);
                     startActivity(intent);
-                    shutDownApp();
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("EXIT", true);
+                startActivity(intent);
             }
         });
     }
-
-
-    //This method sets the screen to fullscreen. It removes the Notifications bar,
-    //the Actionbar and the virtual keys (if they are on the phone)
-    public void makeFullScreen() {
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        if (Build.VERSION.SDK_INT < 19) { //View.SYSTEM_UI_FLAG_IMMERSIVE is only on API 19+
-            this.getWindow().getDecorView()
-                    .setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-        } else {
-            this.getWindow().getDecorView()
-                    .setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE);
-        }
-    }
-
 
     //If the back-button is pressed, it will just return to the application. This is for avoiding the
     //user to use the back-button to go out of the app

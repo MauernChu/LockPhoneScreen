@@ -3,11 +3,9 @@ package com.aau.thesis.lockscreenapplication.presenter;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -24,14 +22,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import static com.aau.thesis.lockscreenapplication.helper.Utilities.makeFullScreen;
 import static com.aau.thesis.lockscreenapplication.helper.Utilities.shutDownApp;
 
 public class LoginActivity extends Activity {
+    //EditText and button for storing phoneUser in database and login
     EditText editPhoneName;
     EditText editEmail;
     EditText editPassword;
     Button button_login;
+
+    //for storing the value of the PhoneLockStatus
     Boolean phoneLockStatus;
+
 
     DatabaseReference databasePhone;
     DatabaseReference firebasePhoneLockStatus;
@@ -46,7 +49,7 @@ public class LoginActivity extends Activity {
             finish();
         }
 
-        makeFullScreen();
+        makeFullScreen(LoginActivity.this);
         startService(new Intent(this, LockScreenService.class));
 
         firebasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
@@ -61,17 +64,6 @@ public class LoginActivity extends Activity {
         button_login = (Button) findViewById(R.id.button_login);
     }
 
-    public void makeFullScreen() {
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        if (Build.VERSION.SDK_INT < 19) { //View.SYSTEM_UI_FLAG_IMMERSIVE is only on API 19+
-            this.getWindow().getDecorView()
-                    .setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-        } else {
-            this.getWindow().getDecorView()
-                    .setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE);
-        }
-    }
 
     @Override
     public void onBackPressed() {
