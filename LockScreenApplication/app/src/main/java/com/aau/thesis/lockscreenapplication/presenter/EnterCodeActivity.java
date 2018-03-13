@@ -54,7 +54,7 @@ public class EnterCodeActivity extends Activity {
         databaseCode = FirebaseDatabase.getInstance().getReference("Code");
         databaseTotal = FirebaseDatabase.getInstance().getReference("Total");
         databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
-        databaseUnlockIdentifier = FirebaseDatabase.getInstance().getReference("UnlockIdentifier").child(phoneId);
+        databaseUnlockIdentifier = FirebaseDatabase.getInstance().getReference("UnlockIdentifier");
 
         enter_code = (EditText) findViewById(R.id.enter_code);
         display_success = (TextView) findViewById(R.id.display_success);
@@ -140,7 +140,7 @@ public class EnterCodeActivity extends Activity {
         phoneLockReason = "Entered Code";
         timePhoneWasUnlocked = "1520853486553";
         UnlockPhoneList unlockPhoneIdentifier = new UnlockPhoneList(phoneLockListID, phoneLockReason, timePhoneWasUnlocked);
-        databaseUnlockIdentifier.setValue(unlockPhoneIdentifier);
+        databaseUnlockIdentifier.child(phoneId).child(phoneLockListID).setValue(unlockPhoneIdentifier);
     }
 
     public void addToTotalScore(){
