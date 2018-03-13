@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
                     startService(new Intent(getApplicationContext(), LockScreenService.class));
 
                     //Logging if the Homekey is pressed. Stores this in the database
-                    databaseHomeKey = FirebaseDatabase.getInstance().getReference("UnlockPhoneIdentifier");
+                    databaseHomeKey = FirebaseDatabase.getInstance().getReference("UnlockPhoneList");
                     homeLockList = new ArrayList<>();
                     HomeWatcher MainHomeWatcher = new HomeWatcher(getApplicationContext());
                     MainHomeWatcher.setOnHomePressedListener(new OnHomePressedListener() {
@@ -76,7 +76,7 @@ public class MainActivity extends Activity {
                             String idHomeKey = databaseHomeKey.push().getKey();
                             Boolean homeKeyPushed = true;
                             homeLockList.add(homeKeyPushed);
-                           // UnlockPhoneIdentifier homeKey = new UnlockPhoneIdentifier(homeLockList, idHomeKey);
+                           // UnlockPhoneList homeKey = new UnlockPhoneList(homeLockList, idHomeKey);
                            // databaseHomeKey.child(idHomeKey).setValue(homeKey);
                         }
 

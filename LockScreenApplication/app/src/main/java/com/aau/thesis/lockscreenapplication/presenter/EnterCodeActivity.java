@@ -8,7 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.aau.thesis.lockscreenapplication.R;
-import com.aau.thesis.lockscreenapplication.model.UnlockPhoneIdentifier;
+import com.aau.thesis.lockscreenapplication.model.UnlockPhoneList;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,12 +25,12 @@ public class EnterCodeActivity extends Activity {
     String unlockCode;
     String totalScoreString;
     int totalScoreInt;
-    int newTotalScoreInt;
+    int updatedTotalScoreInt;
     String phoneId;
-    String enteredCodeIdentifierID;
-    String timestamp;
+    String phoneLockListID;
+    String timePhoneWasUnlocked;
 
-    String enteredCodeIdentifier;
+    String phoneLockReason;
 
     private FirebaseAuth firebaseAuth;
     DatabaseReference databasePhoneLockStatus;
@@ -136,16 +136,16 @@ public class EnterCodeActivity extends Activity {
 
     public void addUnlockPhoneIdentifier(){
         phoneId = firebaseAuth.getCurrentUser().getUid();
-        enteredCodeIdentifierID = databaseUnlockIdentifier.push().getKey();
-        enteredCodeIdentifier = "Entered Code";
-        timestamp = "1520853486553";
-        UnlockPhoneIdentifier unlockPhoneIdentifier = new UnlockPhoneIdentifier(enteredCodeIdentifierID, enteredCodeIdentifier, timestamp);
+        phoneLockListID = databaseUnlockIdentifier.push().getKey();
+        phoneLockReason = "Entered Code";
+        timePhoneWasUnlocked = "1520853486553";
+        UnlockPhoneList unlockPhoneIdentifier = new UnlockPhoneList(phoneLockListID, phoneLockReason, timePhoneWasUnlocked);
         databaseUnlockIdentifier.setValue(unlockPhoneIdentifier);
     }
 
     public void addToTotalScore(){
-        newTotalScoreInt = totalScoreInt + 1;
-        String newTotalScoreString = Integer.toString(newTotalScoreInt);
+        updatedTotalScoreInt = totalScoreInt - 1;
+        String newTotalScoreString = Integer.toString(updatedTotalScoreInt);
         databaseTotal.setValue(newTotalScoreString);
     }
 }
