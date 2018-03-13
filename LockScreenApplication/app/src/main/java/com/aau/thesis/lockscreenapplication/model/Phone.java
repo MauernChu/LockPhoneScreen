@@ -7,13 +7,13 @@ package com.aau.thesis.lockscreenapplication.model;
 public class Phone {
     private String phoneId;
     private String phoneName;
-    private UnlockPhoneList unlockPhoneIdentifier;
+    private Boolean phoneLockStatus;
 
 
-    public Phone(String phoneId, String phoneName) {
+    public Phone(String phoneId, String phoneName, Boolean phoneLockStatus) {
         this.phoneId = phoneId;
         this.phoneName = phoneName;
-        this.unlockPhoneIdentifier = unlockPhoneIdentifier;
+        this.phoneLockStatus = phoneLockStatus;
     }
 
     public String getPhoneId() {
@@ -32,11 +32,11 @@ public class Phone {
         this.phoneName = phoneName;
     }
 
-    public UnlockPhoneList getUnlockPhoneIdentifier() {
-        return unlockPhoneIdentifier;
+    public Boolean getPhoneLockStatus() {
+        return phoneLockStatus;
     }
 
-    public void setUnlockPhoneIdentifier(UnlockPhoneList unlockPhoneIdentifier) {
-        this.unlockPhoneIdentifier = unlockPhoneIdentifier;
+    public void setPhoneLockStatus(Boolean phoneLockStatus) {
+        this.phoneLockStatus = phoneLockStatus;
     }
 }

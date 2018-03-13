@@ -82,6 +82,7 @@ public class LoginActivity extends Activity {
         final String phoneName = editPhoneName.getText().toString().trim();
         String email = editEmail.getText().toString().trim();
         String password = editPassword.getText().toString().trim();
+        final Boolean phoneLockStatus = false;
         progressDialog.setMessage("Signing up...");
         progressDialog.show();
         firebaseAuthLogin.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -89,9 +90,13 @@ public class LoginActivity extends Activity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     String phoneId = firebaseAuthLogin.getCurrentUser().getUid();
-                    Phone dbPhone = new Phone(phoneId, phoneName);
+
+
+
+                    Phone dbPhone = new Phone(phoneId, phoneName, phoneLockStatus);
                     DatabaseReference databaseCurrentUser = databasePhone.child(phoneId);
                     databaseCurrentUser.child("Name").setValue(dbPhone.getPhoneName());
+                    databaseCurrentUser.child("PhoneLockStatus").setValue(dbPhone.getPhoneLockStatus());
                     Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
                     mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(mainIntent);
