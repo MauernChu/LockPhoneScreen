@@ -126,9 +126,9 @@ public class EnterCodeActivity extends Activity {
             addToTotalScore();
             addUnlockPhoneIdentifier();
             changeUnlockPhoneStatus();
-            shutDownApp();
-            Intent intent = new Intent(getApplicationContext(), EnterCodeActivity.class);
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.putExtra("EXIT", true);
             startActivity(intent);
         } else {
             display_success.setText("wrong code!");

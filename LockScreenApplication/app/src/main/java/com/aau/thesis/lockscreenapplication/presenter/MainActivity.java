@@ -41,6 +41,10 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (getIntent().getBooleanExtra("EXIT", false)) {
+            finish();
+        }
+
         //Instans of the databasereference for getting Boolean value from the PhoneLockStatus
         firebasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
 
