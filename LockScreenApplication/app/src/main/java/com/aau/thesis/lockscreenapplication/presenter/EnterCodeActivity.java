@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import static com.aau.thesis.lockscreenapplication.helper.Utilities.makeFullScreen;
+import static com.aau.thesis.lockscreenapplication.helper.Utilities.shutDownApp;
 
 public class EnterCodeActivity extends Activity {
     EditText enter_code;
@@ -77,8 +78,7 @@ public class EnterCodeActivity extends Activity {
                 phoneLockStatus = dataSnapshot.getValue(Boolean.class);
                 if (phoneLockStatus.equals(false)) {
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("EXIT", true);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 }
             }
@@ -126,9 +126,9 @@ public class EnterCodeActivity extends Activity {
             addToTotalScore();
             addUnlockPhoneIdentifier();
             changeUnlockPhoneStatus();
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("EXIT", true);
+            shutDownApp();
+            Intent intent = new Intent(getApplicationContext(), EnterCodeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         } else {
             display_success.setText("wrong code!");

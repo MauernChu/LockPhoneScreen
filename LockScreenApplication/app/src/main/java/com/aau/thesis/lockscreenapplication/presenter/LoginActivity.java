@@ -16,14 +16,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import static com.aau.thesis.lockscreenapplication.helper.Utilities.makeFullScreen;
-import static com.aau.thesis.lockscreenapplication.helper.Utilities.shutDownApp;
 
 public class LoginActivity extends Activity {
     //EditText and button for storing phoneUser in database and login
@@ -31,10 +27,6 @@ public class LoginActivity extends Activity {
     EditText editEmail;
     EditText editPassword;
     Button button_login;
-
-    //for storing the value of the PhoneLockStatus
-    Boolean phoneLockStatus;
-
 
     DatabaseReference databasePhone;
     DatabaseReference firebasePhoneLockStatus;
@@ -45,9 +37,6 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        if (getIntent().getBooleanExtra("EXIT", false)) {
-            finish();
-        }
 
         makeFullScreen(LoginActivity.this);
         startService(new Intent(this, LockScreenService.class));
@@ -70,14 +59,12 @@ public class LoginActivity extends Activity {
         return; //Do nothing!
     }
 
+    //Method for entering MainActivity when Login button is pushed
     public void goMainActivity(View view) throws InterruptedException {
         addPhoneToDatabase();
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("EXIT", true);
-        startActivity(intent);
     }
 
+    //Method for adding phone to the database, triggered when the users
     public void addPhoneToDatabase() {
         final String phoneName = editPhoneName.getText().toString().trim();
         String email = editEmail.getText().toString().trim();
@@ -90,53 +77,14 @@ public class LoginActivity extends Activity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     String phoneId = firebaseAuthLogin.getCurrentUser().getUid();
-
-
-
                     Phone dbPhone = new Phone(phoneId, phoneName, phoneLockStatus);
                     DatabaseReference databaseCurrentUser = databasePhone.child(phoneId);
                     databaseCurrentUser.child("Name").setValue(dbPhone.getPhoneName());
                     databaseCurrentUser.child("PhoneLockStatus").setValue(dbPhone.getPhoneLockStatus());
                     Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
-                    mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(mainIntent);
                 }
-            }
-        });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        databasePhone.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        firebasePhoneLockStatus.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                phoneLockStatus = dataSnapshot.getValue(Boolean.class);
-                if (phoneLockStatus.equals(false)) {
-                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("EXIT", true);
-                    startActivity(intent);
-                    shutDownApp();
-                }
-            }
-
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
             }
         });
     }
