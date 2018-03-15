@@ -81,6 +81,7 @@ public class LoginActivity extends Activity {
                     DatabaseReference databaseCurrentUser = databasePhone.child(phoneId);
                     databaseCurrentUser.child("Name").setValue(dbPhone.getPhoneName());
                     databaseCurrentUser.child("PhoneLockStatus").setValue(dbPhone.getPhoneLockStatus());
+                    progressDialog.dismiss();
                     Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
                     mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(mainIntent);
