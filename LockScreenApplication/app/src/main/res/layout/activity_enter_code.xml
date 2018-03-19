@@ -12,33 +12,41 @@
     <!--android:onClick="unlockScreen"-->
     <Button
         android:id="@+id/button_unlock"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="231dp"
+        android:layout_marginBottom="246dp"
+        android:fontFamily="sans-serif"
         android:onClick="unlockScreen"
-        android:text="@string/button_unlock" />
+        android:text="@string/button_unlock"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/enter_code"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/display_success"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="54dp"
+        android:layout_alignBottom="@+id/button_unlock"
+        android:layout_alignLeft="@+id/button_unlock"
+        android:layout_alignStart="@+id/button_unlock"
+        android:layout_marginBottom="61dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="@string/text_password" />
+        android:hint="Enter password"
+        android:inputType="textPersonName" />
 
     <TextView
         android:id="@+id/display_success"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/button_unlock"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="@string/text_if_success" />
+        android:layout_above="@+id/enter_code"
+        android:layout_alignLeft="@+id/enter_code"
+        android:layout_alignStart="@+id/enter_code"
+        android:layout_marginBottom="14dp"
+        android:text="@string/text_if_success"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:visibility="invisible" />
 </RelativeLayout>
 
 

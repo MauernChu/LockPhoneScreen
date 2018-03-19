@@ -12,13 +12,14 @@
     <!--android:onClick="unlockScreen"-->
     <Button
         android:id="@+id/button_unlock"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="233dp"
+        android:layout_centerVertical="true"
         android:onClick="goToEnterCodeActivity"
-        android:text="@string/button_entercodepage" />
+        android:text="@string/button_entercodepage"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
 
 

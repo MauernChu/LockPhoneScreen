@@ -3,9 +3,12 @@ package com.aau.thesis.lockscreenapplication.presenter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aau.thesis.lockscreenapplication.R;
 import com.aau.thesis.lockscreenapplication.model.UnlockPhoneList;
@@ -131,7 +134,9 @@ public class EnterCodeActivity extends Activity {
             intent.putExtra("EXIT", true);
             startActivity(intent);
         } else {
-            display_success.setText("wrong code!");
+            Toast toast= Toast.makeText(getApplicationContext(),"Code incorrect!", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);
+            toast.show();
         }
     }
 
