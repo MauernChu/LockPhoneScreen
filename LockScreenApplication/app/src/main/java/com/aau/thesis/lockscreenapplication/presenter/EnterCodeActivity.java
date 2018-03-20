@@ -17,6 +17,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import static com.aau.thesis.lockscreenapplication.helper.Utilities.makeFullScreen;
@@ -144,9 +145,10 @@ public class EnterCodeActivity extends Activity {
         phoneId = firebaseAuth.getCurrentUser().getUid();
         phoneLockListID = databaseUnlockIdentifier.push().getKey();
         phoneLockReason = "Entered Code";
-        timePhoneWasUnlocked = "1520853486553";
+        timePhoneWasUnlocked = "";
         UnlockPhoneList unlockPhoneIdentifier = new UnlockPhoneList(phoneLockListID, phoneLockReason, timePhoneWasUnlocked);
         databaseUnlockIdentifier.child(phoneId).child(phoneLockListID).setValue(unlockPhoneIdentifier);
+        databaseUnlockIdentifier.child(phoneId).child(phoneLockListID).child("timestamp").setValue(ServerValue.TIMESTAMP);
     }
 
     public void addToTotalScore(){
