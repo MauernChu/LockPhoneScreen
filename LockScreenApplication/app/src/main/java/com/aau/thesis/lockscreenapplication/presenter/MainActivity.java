@@ -4,12 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import com.aau.thesis.lockscreenapplication.R;
-import com.aau.thesis.lockscreenapplication.helper.HomeWatcher;
 import com.aau.thesis.lockscreenapplication.helper.LockScreenService;
-import com.aau.thesis.lockscreenapplication.helper.OnHomePressedListener;
 import com.aau.thesis.lockscreenapplication.model.UnlockPhoneList;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -19,20 +16,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.aau.thesis.lockscreenapplication.helper.Utilities.makeFullScreen;
 
 public class MainActivity extends Activity {
-    //Temporary Database reference for storing homekey pushed on the screen + list to store values
-    DatabaseReference databaseHomeKey;
-    List<Boolean> homeLockList;
     String phoneId;
     String phoneLockListID;
     String phoneLockReason;
     String timePhoneWasUnlocked;
+    String totalScoreString;
+    int totalScoreInt;
+    int newTotalScoreInt;
+    String newTotalScoreString;
 
     //Instans of databasereference + boolean for storing the PhoneLockStatus
     DatabaseReference firebasePhoneLockStatus;
@@ -40,6 +34,8 @@ public class MainActivity extends Activity {
 
     DatabaseReference databasePhone;
     DatabaseReference databaseUnlockIdentifier;
+    DatabaseReference databaseTotal;
+    DatabaseReference databaseCodeEntered;
 
 
     //Used for creating phoneUser + checking if the users is already locked in
@@ -61,6 +57,8 @@ public class MainActivity extends Activity {
 
         databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
         databaseUnlockIdentifier = FirebaseDatabase.getInstance().getReference("UnlockIdentifier");
+        databaseTotal = FirebaseDatabase.getInstance().getReference("Total");
+        databaseCodeEntered = FirebaseDatabase.getInstance().getReference("CodeEntered");
 
         //Check if user has logged in or not, if not the Login-activity will open.
         firebaseAuth = FirebaseAuth.getInstance();
@@ -75,41 +73,6 @@ public class MainActivity extends Activity {
                 }
                 makeFullScreen(MainActivity.this);
                 startService(new Intent(getApplicationContext(), LockScreenService.class));
-
-                /*
-                //connection to the PhoneLockList
-                databaseHomeKey = FirebaseDatabase.getInstance().getReference("UnlockPhoneList");
-                */
-
-                /*
-                //homeLockList = new ArrayList<>();
-                HomeWatcher MainHomeWatcher = new HomeWatcher(getApplicationContext());
-                MainHomeWatcher.setOnHomePressedListener(new OnHomePressedListener() {
-                    @Override
-                    public void onHomePressed() {
-                        //homeLockList.clear();
-                        //String idHomeKey = databaseHomeKey.push().getKey();
-                        //Boolean homeKeyPushed = true;
-                        //homeLockList.add(homeKeyPushed);
-                        //UnlockPhoneList homeKey = new UnlockPhoneList(homeLockList, idHomeKey);
-                        //databaseHomeKey.child(idHomeKey).setValue("home Key");
-
-
-
-                        phoneId = firebaseAuth.getCurrentUser().getUid();
-                        phoneLockListID = databaseUnlockIdentifier.push().getKey();
-                        phoneLockReason = "Home key";
-                        timePhoneWasUnlocked = "here will be timestamp";
-                        UnlockPhoneList unlockPhoneIdentifier = new UnlockPhoneList(phoneLockListID, phoneLockReason, timePhoneWasUnlocked);
-                        databaseUnlockIdentifier.child(phoneId).child(phoneLockListID).setValue(unlockPhoneIdentifier);
-
-                    }
-
-                    @Override
-                    public void onHomeLongPressed() {
-                    }
-                });
-                MainHomeWatcher.startWatch();*/
             }
         };
     }
@@ -141,6 +104,20 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+        //connection to the Total score
+        databaseTotal.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                totalScoreString = dataSnapshot.getValue(String.class);
+                totalScoreInt = Integer.parseInt(totalScoreString);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     //If the back-button is pressed, it will just return to the application.
@@ -157,9 +134,9 @@ public class MainActivity extends Activity {
         startActivity(intent);
     }
 
+    //method for logging, when they push Home button or Recent apps button
     @Override
-    protected void onUserLeaveHint()
-    {
+    protected void onUserLeaveHint() {
         super.onUserLeaveHint();
         phoneId = firebaseAuth.getCurrentUser().getUid();
         phoneLockListID = databaseUnlockIdentifier.push().getKey();
@@ -168,6 +145,11 @@ public class MainActivity extends Activity {
         UnlockPhoneList unlockPhoneIdentifier = new UnlockPhoneList(phoneLockListID, phoneLockReason, timePhoneWasUnlocked);
         databaseUnlockIdentifier.child(phoneId).child(phoneLockListID).setValue(unlockPhoneIdentifier);
         databaseUnlockIdentifier.child(phoneId).child(phoneLockListID).child("timestamp").setValue(ServerValue.TIMESTAMP);
+        newTotalScoreInt = totalScoreInt - 1;
+        newTotalScoreString = Integer.toString(newTotalScoreInt);
+        databaseTotal.setValue(newTotalScoreString);
+        databaseCodeEntered.setValue("0");
+        databasePhone.child(phoneId).child("PhoneLockStatus").setValue(false);
         finish();
     }
 }

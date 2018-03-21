@@ -43,6 +43,7 @@ public class EnterCodeActivity extends Activity {
     DatabaseReference databaseTotal;
     DatabaseReference databasePhone;
     DatabaseReference databaseUnlockIdentifier;
+    DatabaseReference databaseCodeEntered;
 
 
     @Override
@@ -60,6 +61,7 @@ public class EnterCodeActivity extends Activity {
         databaseTotal = FirebaseDatabase.getInstance().getReference("Total");
         databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
         databaseUnlockIdentifier = FirebaseDatabase.getInstance().getReference("UnlockIdentifier");
+        databaseCodeEntered = FirebaseDatabase.getInstance().getReference("CodeEntered");
 
         enter_code = (EditText) findViewById(R.id.enter_code);
         display_success = (TextView) findViewById(R.id.display_success);
@@ -130,6 +132,7 @@ public class EnterCodeActivity extends Activity {
             addToTotalScore();
             addUnlockPhoneIdentifier();
             changeUnlockPhoneStatus();
+            changeCodeEntered();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.putExtra("EXIT", true);
@@ -161,5 +164,9 @@ public class EnterCodeActivity extends Activity {
         phoneId = firebaseAuth.getCurrentUser().getUid();
         Boolean phoneockStatus = false;
         databasePhone.child(phoneId).child("PhoneLockStatus").setValue(phoneockStatus);
+    }
+
+    public void changeCodeEntered(){
+        databaseCodeEntered.setValue("0");
     }
 }
