@@ -27,10 +27,8 @@ public class MainActivity extends Activity {
     int totalScoreInt;
     int newTotalScoreInt;
     String newTotalScoreString;
+    boolean occured;
 
-    //Instans of databasereference + boolean for storing the PhoneLockStatus
-    DatabaseReference firebasePhoneLockStatus;
-    Boolean phoneLockStatus;
 
     DatabaseReference databasePhone;
     DatabaseReference databaseUnlockIdentifier;
@@ -46,14 +44,11 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        occured = false;
         if (getIntent().getBooleanExtra("EXIT", false)) {
             finish();
         }
 
-
-        //Instans of the databasereference for getting Boolean value from the PhoneLockStatus
-        firebasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
 
         databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
         databaseUnlockIdentifier = FirebaseDatabase.getInstance().getReference("UnlockIdentifier");
@@ -87,14 +82,15 @@ public class MainActivity extends Activity {
         databasePhone.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-              /*  String phoneId = firebaseAuth.getCurrentUser().getUid();
+                String phoneId = firebaseAuth.getCurrentUser().getUid();
                 Boolean phoneLockStatus = dataSnapshot.child(phoneId).child("PhoneLockStatus").getValue(Boolean.class);
-                if (phoneLockStatus.equals(false)) {
+                if (phoneLockStatus.equals(false) && occured == false) {
+                    occured = true;
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra("EXIT", true);
                     startActivity(intent);
-                }*/
+                }
             }
 
             @Override

@@ -27,6 +27,7 @@ public class LockScreenService extends Service {
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
         intentFilter.addAction(Intent.ACTION_BOOT_COMPLETED);
+        intentFilter.addAction(Intent.ACTION_TIME_TICK);
 
         /*Set up a receiver to listen for the Intents in this Service, the reciever will
         * start the LoginActivity if the the screen was turned off or booted
