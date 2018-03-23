@@ -26,7 +26,6 @@ import static com.aau.thesis.lockscreenapplication.helper.Utilities.shutDownApp;
 public class EnterCodeActivity extends Activity {
     EditText enter_code;
     TextView display_success;
-    Boolean phoneLockStatus;
     String unlockCode;
     String totalScoreString;
     int totalScoreInt;
@@ -34,6 +33,7 @@ public class EnterCodeActivity extends Activity {
     String phoneId;
     String phoneLockListID;
     String timePhoneWasUnlocked;
+    boolean occured;
 
     String phoneLockReason;
 
@@ -49,12 +49,15 @@ public class EnterCodeActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        occured = false;
+        if (getIntent().getBooleanExtra("EXIT", false)) {
+            finish();
+        }
         setContentView(R.layout.activity_enter_code);
 
         makeFullScreen(EnterCodeActivity.this);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        String phoneId = firebaseAuth.getCurrentUser().getUid();
 
         databasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
         databaseCode = FirebaseDatabase.getInstance().getReference("Code");
@@ -78,13 +81,16 @@ public class EnterCodeActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        databasePhoneLockStatus.addValueEventListener(new ValueEventListener() {
+        databasePhone.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                phoneLockStatus = dataSnapshot.getValue(Boolean.class);
-                if (phoneLockStatus.equals(false)) {
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                phoneId = firebaseAuth.getCurrentUser().getUid();
+                Boolean phoneLockStatus = dataSnapshot.child(phoneId).child("PhoneLockStatus").getValue(Boolean.class);
+                if (phoneLockStatus.equals(false) && occured == false) {
+                    occured = true;
+                    Intent intent = new Intent(getApplicationContext(), EnterCodeActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("EXIT", true);
                     startActivity(intent);
                 }
             }
