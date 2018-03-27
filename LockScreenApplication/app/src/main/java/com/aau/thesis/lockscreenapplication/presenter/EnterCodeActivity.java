@@ -77,8 +77,7 @@ public class EnterCodeActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        return; //Do nothing!
     }
 
     @Override
@@ -191,9 +190,23 @@ public class EnterCodeActivity extends Activity {
         databaseUnlockIdentifier.child(phoneId).child(phoneLockListID).child("timestamp").setValue(ServerValue.TIMESTAMP);
         newTotalScoreInt = totalScoreInt - 1;
         newTotalScoreString = Integer.toString(newTotalScoreInt);
-        databaseTotal.setValue(newTotalScoreString);
-        databaseCodeEntered.setValue("0");
-        databasePhone.child(phoneId).child("PhoneLockStatus").setValue(false);
+        databaseTotal.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                totalScoreString = dataSnapshot.getValue(String.class);
+                totalScoreInt = Integer.parseInt(totalScoreString);
+                newTotalScoreInt = totalScoreInt - 1;
+                newTotalScoreString = Integer.toString(newTotalScoreInt);
+                databaseTotal.setValue(newTotalScoreString);
+                databaseCodeEntered.setValue("0");
+                databasePhone.child(phoneId).child("PhoneLockStatus").setValue(false);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         finish();
     }
 

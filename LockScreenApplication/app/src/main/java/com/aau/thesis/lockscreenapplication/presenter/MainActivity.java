@@ -100,20 +100,6 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         });
-
-        //connection to the Total score
-        databaseTotal.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                totalScoreString = dataSnapshot.getValue(String.class);
-                totalScoreInt = Integer.parseInt(totalScoreString);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
     //If the back-button is pressed, it will just return to the application.
@@ -141,11 +127,23 @@ public class MainActivity extends Activity {
         UnlockPhoneList unlockPhoneIdentifier = new UnlockPhoneList(phoneLockListID, phoneLockReason, timePhoneWasUnlocked);
         databaseUnlockIdentifier.child(phoneId).child(phoneLockListID).setValue(unlockPhoneIdentifier);
         databaseUnlockIdentifier.child(phoneId).child(phoneLockListID).child("timestamp").setValue(ServerValue.TIMESTAMP);
-        newTotalScoreInt = totalScoreInt - 1;
-        newTotalScoreString = Integer.toString(newTotalScoreInt);
-        databaseTotal.setValue(newTotalScoreString);
-        databaseCodeEntered.setValue("0");
-        databasePhone.child(phoneId).child("PhoneLockStatus").setValue(false);
+        databaseTotal.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                totalScoreString = dataSnapshot.getValue(String.class);
+                totalScoreInt = Integer.parseInt(totalScoreString);
+                newTotalScoreInt = totalScoreInt - 1;
+                newTotalScoreString = Integer.toString(newTotalScoreInt);
+                databaseTotal.setValue(newTotalScoreString);
+                databaseCodeEntered.setValue("0");
+                databasePhone.child(phoneId).child("PhoneLockStatus").setValue(false);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         finish();
     }
 }
