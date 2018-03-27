@@ -34,6 +34,8 @@ public class EnterCodeActivity extends Activity {
     String phoneLockListID;
     String timePhoneWasUnlocked;
     boolean occured;
+    int newTotalScoreInt;
+    String newTotalScoreString;
 
     String phoneLockReason;
 
@@ -70,6 +72,7 @@ public class EnterCodeActivity extends Activity {
         display_success = (TextView) findViewById(R.id.display_success);
 
     }
+
 
 
     @Override
@@ -175,4 +178,23 @@ public class EnterCodeActivity extends Activity {
     public void changeCodeEntered(){
         databaseCodeEntered.setValue("0");
     }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        phoneId = firebaseAuth.getCurrentUser().getUid();
+        phoneLockListID = databaseUnlockIdentifier.push().getKey();
+        phoneLockReason = "Home key";
+        timePhoneWasUnlocked = "";
+        UnlockPhoneList unlockPhoneIdentifier = new UnlockPhoneList(phoneLockListID, phoneLockReason, timePhoneWasUnlocked);
+        databaseUnlockIdentifier.child(phoneId).child(phoneLockListID).setValue(unlockPhoneIdentifier);
+        databaseUnlockIdentifier.child(phoneId).child(phoneLockListID).child("timestamp").setValue(ServerValue.TIMESTAMP);
+        newTotalScoreInt = totalScoreInt - 1;
+        newTotalScoreString = Integer.toString(newTotalScoreInt);
+        databaseTotal.setValue(newTotalScoreString);
+        databaseCodeEntered.setValue("0");
+        databasePhone.child(phoneId).child("PhoneLockStatus").setValue(false);
+        finish();
+    }
+
 }
