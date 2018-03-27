@@ -39,7 +39,6 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
 
         makeFullScreen(LoginActivity.this);
-        startService(new Intent(this, LockScreenService.class));
 
         firebasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
 

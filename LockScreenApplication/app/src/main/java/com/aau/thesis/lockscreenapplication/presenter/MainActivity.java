@@ -65,9 +65,9 @@ public class MainActivity extends Activity {
                     startActivity(loginIntent);
                 } else {
                     setContentView(R.layout.activity_main);
+                    makeFullScreen(MainActivity.this);
+                    startService(new Intent(getApplicationContext(), LockScreenService.class));
                 }
-                makeFullScreen(MainActivity.this);
-                startService(new Intent(getApplicationContext(), LockScreenService.class));
             }
         };
     }
