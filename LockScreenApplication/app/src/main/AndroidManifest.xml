@@ -35,10 +35,12 @@
 
         <activity
             android:name="com.aau.thesis.lockscreenapplication.presenter.LoginActivity"
-            android:label="@string/title_activity_login"/>
+            android:label="@string/title_activity_login"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.aau.thesis.lockscreenapplication.presenter.EnterCodeActivity"
-            android:label="@string/title_activity_enter_code" ></activity>
+            android:label="@string/title_activity_enter_code"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>
