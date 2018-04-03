@@ -1,51 +1,51 @@
 package com.aau.thesis.lockscreenapplication.presenter;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aau.thesis.lockscreenapplication.R;
+import com.aau.thesis.lockscreenapplication.data.DatabaseInterface;
+import com.aau.thesis.lockscreenapplication.data.FirebaseImpl;
+import com.aau.thesis.lockscreenapplication.data.listeners.PhoneLockStatusListener;
 import com.aau.thesis.lockscreenapplication.model.UnlockPhoneList;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import static com.aau.thesis.lockscreenapplication.helper.Utilities.makeFullScreen;
-import static com.aau.thesis.lockscreenapplication.helper.Utilities.shutDownApp;
 
-public class EnterCodeActivity extends Activity {
-    EditText enter_code;
-    TextView display_success;
-    String unlockCode;
-    String totalScoreString;
-    int totalScoreInt;
-    int updatedTotalScoreInt;
-    String phoneId;
-    String phoneLockListID;
-    String timePhoneWasUnlocked;
-    boolean occured;
-    int newTotalScoreInt;
-    String newTotalScoreString;
-
-    String phoneLockReason;
-
+public class EnterCodeActivity extends BaseActivity {
+    private DatabaseInterface databaseInterface;
     private FirebaseAuth firebaseAuth;
-    DatabaseReference databasePhoneLockStatus;
-    DatabaseReference databaseCode;
-    DatabaseReference databaseTotal;
-    DatabaseReference databasePhone;
-    DatabaseReference databaseUnlockIdentifier;
-    DatabaseReference databaseCodeEntered;
+    private DatabaseReference databasePhoneLockStatus;
+    private DatabaseReference databaseCode;
+    private DatabaseReference databaseTotal;
+    private DatabaseReference databasePhone;
+    private DatabaseReference databaseUnlockIdentifier;
+    private DatabaseReference databaseCodeEntered;
+
+    private EditText enter_code;
+    private TextView display_success;
+
+    private String unlockCode;
+    private String totalScoreString;
+    private String newTotalScoreString;
+    private String phoneLockReason;
+    private String phoneId;
+    private String phoneLockListID;
+    private String timePhoneWasUnlocked;
+    private int totalScoreInt;
+    private int updatedTotalScoreInt;
+    private int newTotalScoreInt;
+    private boolean occured;
 
 
     @Override
@@ -55,53 +55,34 @@ public class EnterCodeActivity extends Activity {
         if (getIntent().getBooleanExtra("EXIT", false)) {
             finish();
         }
+
         setContentView(R.layout.activity_enter_code);
 
+        //--------- View related ---------
         makeFullScreen(EnterCodeActivity.this);
-
-        firebaseAuth = FirebaseAuth.getInstance();
-
-        databasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
-        databaseCode = FirebaseDatabase.getInstance().getReference("Code");
-        databaseTotal = FirebaseDatabase.getInstance().getReference("Total");
-        databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
-        databaseUnlockIdentifier = FirebaseDatabase.getInstance().getReference("UnlockIdentifier");
-        databaseCodeEntered = FirebaseDatabase.getInstance().getReference("CodeEntered");
-
         enter_code = (EditText) findViewById(R.id.enter_code);
         display_success = (TextView) findViewById(R.id.display_success);
 
+
+        //--------- Database Logic ---------
+        databaseInterface = new FirebaseImpl();
+        databaseInterface.addListener(this);
+        firebaseAuth = databaseInterface.createFirebaseAuth();
+        databasePhoneLockStatus = databaseInterface.createDatabaseReferenceToPhoneLockStatus();
+        databaseCode = databaseInterface.createDatabaseReferenceToCode();
+        databaseTotal = databaseInterface.createDatabaseReferenceToTotal();
+        databasePhone = databaseInterface.createDatabaseReferenceToPhone();
+        databaseUnlockIdentifier = databaseInterface.createDatabaseReferenceToUnlockIdentifier();
+        databaseCodeEntered = databaseInterface.createDatabaseReferenceToCodeEntered();
     }
 
 
-
-    @Override
-    public void onBackPressed() {
-        return; //Do nothing!
-    }
 
     @Override
     protected void onStart() {
         super.onStart();
-        databasePhone.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                phoneId = firebaseAuth.getCurrentUser().getUid();
-                Boolean phoneLockStatus = dataSnapshot.child(phoneId).child("PhoneLockStatus").getValue(Boolean.class);
-                if (phoneLockStatus.equals(false) && occured == false) {
-                    occured = true;
-                    Intent intent = new Intent(getApplicationContext(), EnterCodeActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("EXIT", true);
-                    startActivity(intent);
-                }
-            }
+        databaseInterface.listenToPhoneLockStatus();
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         databaseCode.addValueEventListener(new ValueEventListener() {
             @Override
@@ -146,13 +127,13 @@ public class EnterCodeActivity extends Activity {
             intent.putExtra("EXIT", true);
             startActivity(intent);
         } else {
-            Toast toast= Toast.makeText(getApplicationContext(),"Code incorrect!", Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);
+            Toast toast = Toast.makeText(getApplicationContext(), "Code incorrect!", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
             toast.show();
         }
     }
 
-    public void addUnlockPhoneIdentifier(){
+    public void addUnlockPhoneIdentifier() {
         phoneId = firebaseAuth.getCurrentUser().getUid();
         phoneLockListID = databaseUnlockIdentifier.push().getKey();
         phoneLockReason = "Entered Code";
@@ -162,19 +143,19 @@ public class EnterCodeActivity extends Activity {
         databaseUnlockIdentifier.child(phoneId).child(phoneLockListID).child("timestamp").setValue(ServerValue.TIMESTAMP);
     }
 
-    public void addToTotalScore(){
+    public void addToTotalScore() {
         updatedTotalScoreInt = totalScoreInt - 1;
         String newTotalScoreString = Integer.toString(updatedTotalScoreInt);
         databaseTotal.setValue(newTotalScoreString);
     }
 
-    public void changeUnlockPhoneStatus(){
+    public void changeUnlockPhoneStatus() {
         phoneId = firebaseAuth.getCurrentUser().getUid();
         Boolean phoneockStatus = false;
         databasePhone.child(phoneId).child("PhoneLockStatus").setValue(phoneockStatus);
     }
 
-    public void changeCodeEntered(){
+    public void changeCodeEntered() {
         databaseCodeEntered.setValue("0");
     }
 
@@ -209,5 +190,16 @@ public class EnterCodeActivity extends Activity {
         });
         finish();
     }
+
+    @Override
+    public void PhoneLockStatusChanged(boolean isPhoneLocked) {
+        if (isPhoneLocked == false) {
+            Intent intent = new Intent(getApplicationContext(), this.getClass());
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("EXIT", true);
+            startActivity(intent);
+        }
+    }
+
 
 }

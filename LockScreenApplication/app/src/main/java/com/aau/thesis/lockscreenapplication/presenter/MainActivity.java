@@ -3,9 +3,15 @@ package com.aau.thesis.lockscreenapplication.presenter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.aau.thesis.lockscreenapplication.R;
+import com.aau.thesis.lockscreenapplication.data.DatabaseInterface;
+import com.aau.thesis.lockscreenapplication.data.FirebaseImpl;
+import com.aau.thesis.lockscreenapplication.data.PhoneLockStatusService;
+import com.aau.thesis.lockscreenapplication.data.listeners.PhoneLockStatusListener;
+import com.aau.thesis.lockscreenapplication.helper.LockScreenReceiver;
 import com.aau.thesis.lockscreenapplication.helper.LockScreenService;
 import com.aau.thesis.lockscreenapplication.model.UnlockPhoneList;
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,7 +24,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import static com.aau.thesis.lockscreenapplication.helper.Utilities.makeFullScreen;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements PhoneLockStatusListener {
+    public static boolean isActivityActive = true;
+
+
     String phoneId;
     String phoneLockListID;
     String phoneLockReason;
@@ -49,6 +58,9 @@ public class MainActivity extends Activity {
             finish();
         }
 
+        DatabaseInterface databaseInterface = new FirebaseImpl();
+        databaseInterface.listenToPhoneLockStatus();
+        databaseInterface.addListener(this);
 
         databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
         databaseUnlockIdentifier = FirebaseDatabase.getInstance().getReference("UnlockIdentifier");
@@ -76,6 +88,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
+        isActivityActive = true;
         firebaseAuth.addAuthStateListener(authStateListener);
 
         //Close the app if PhoneLockStatus returns false
@@ -100,6 +113,12 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isActivityActive = false;
     }
 
     //If the back-button is pressed, it will just return to the application.
@@ -145,5 +164,16 @@ public class MainActivity extends Activity {
             }
         });
         finish();
+    }
+
+    @Override
+    public void PhoneLockStatusChanged(boolean isPhoneLocked) {
+        if(isPhoneLocked && !MainActivity.isActivityActive) {
+            Intent i = new Intent(getApplicationContext(), MainActivity.class);
+            i.addCategory(Intent.CATEGORY_LAUNCHER);
+            i.setAction(Intent.ACTION_MAIN);
+            startActivity(i);
+            Log.e(MainActivity.class.getSimpleName(), "Starting Activity because PhoneLockStatus was: " + isPhoneLocked);
+        }
     }
 }
