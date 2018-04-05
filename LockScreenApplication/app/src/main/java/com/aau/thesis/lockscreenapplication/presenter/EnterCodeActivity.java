@@ -11,7 +11,6 @@ import android.widget.Toast;
 import com.aau.thesis.lockscreenapplication.R;
 import com.aau.thesis.lockscreenapplication.data.DatabaseInterface;
 import com.aau.thesis.lockscreenapplication.data.FirebaseImpl;
-import com.aau.thesis.lockscreenapplication.data.listeners.PhoneLockStatusListener;
 import com.aau.thesis.lockscreenapplication.model.UnlockPhoneList;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -200,6 +199,4 @@ public class EnterCodeActivity extends BaseActivity {
             startActivity(intent);
         }
     }
-
-
 }
