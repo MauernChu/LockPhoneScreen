@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FirebaseImpl implements DatabaseInterface {
-    private List<PhoneLockStatusListener> listeners = new ArrayList();
+    private List<PhoneLockStatusListener> listeners = new ArrayList<PhoneLockStatusListener>();
 
     DatabaseReference databasePhone;
     DatabaseReference phoneLockStatus;
@@ -108,6 +108,11 @@ public class FirebaseImpl implements DatabaseInterface {
     }
 
 }
+
+
+/**
+ * Authentification methods
+ */
 
 
 
