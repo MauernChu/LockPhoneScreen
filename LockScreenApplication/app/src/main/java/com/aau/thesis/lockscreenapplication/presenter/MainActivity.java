@@ -58,17 +58,17 @@ public class MainActivity extends Activity implements PhoneLockStatusListener {
             finish();
         }
 
+        //--------- Database Logic ---------
         DatabaseInterface databaseInterface = new FirebaseImpl();
         databaseInterface.listenToPhoneLockStatus();
         databaseInterface.addListener(this);
-
-        databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
-        databaseUnlockIdentifier = FirebaseDatabase.getInstance().getReference("UnlockIdentifier");
-        databaseTotal = FirebaseDatabase.getInstance().getReference("Total");
-        databaseCodeEntered = FirebaseDatabase.getInstance().getReference("CodeEntered");
+        firebaseAuth = databaseInterface.createFirebaseAuth();
+        databaseTotal = databaseInterface.createDatabaseReferenceToTotal();
+        databasePhone = databaseInterface.createDatabaseReferenceToPhone();
+        databaseUnlockIdentifier = databaseInterface.createDatabaseReferenceToUnlockIdentifier();
+        databaseCodeEntered = databaseInterface.createDatabaseReferenceToCodeEntered();
 
         //Check if user has logged in or not, if not the Login-activity will open.
-        firebaseAuth = FirebaseAuth.getInstance();
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(final FirebaseAuth firebaseAuth) {
