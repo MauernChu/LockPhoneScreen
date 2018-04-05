@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.aau.thesis.lockscreenapplication">
+    package="com.aau.thesis.lockscreenapplication"
+    android:versionCode="@integer/google_play_services_version"
+    android:versionName="string">
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />

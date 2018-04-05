@@ -173,7 +173,6 @@ public class MainActivity extends Activity implements PhoneLockStatusListener {
             i.addCategory(Intent.CATEGORY_LAUNCHER);
             i.setAction(Intent.ACTION_MAIN);
             startActivity(i);
-            Log.e(MainActivity.class.getSimpleName(), "Starting Activity because PhoneLockStatus was: " + isPhoneLocked);
         }
     }
 }

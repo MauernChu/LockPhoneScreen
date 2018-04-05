@@ -24,10 +24,6 @@ public class LockScreenReceiver extends BroadcastReceiver {
     DatabaseReference databasePhone;
     String phoneID;
 
-    LockScreenReceiver() {
-        DatabaseInterface databaseInterface = new FirebaseImpl();
-        databaseInterface.listenToPhoneLockStatus();
-    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -40,41 +36,14 @@ public class LockScreenReceiver extends BroadcastReceiver {
 
 
     public void checkPhoneLockBoolean(final Context context) {
-        /** firebaseAuth = FirebaseAuth.getInstance();
-        if (firebaseAuth.getCurrentUser() != null) {
-            databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
-            phoneID = firebaseAuth.getCurrentUser().getUid();
-            databasePhone.addValueEventListener(new ValueEventListener() {
 
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    phoneID = firebaseAuth.getCurrentUser().getUid();
-                    boolean phoneLockStatus = dataSnapshot.child(phoneID).child("PhoneLockStatus").getValue(Boolean.class);
-
-                    if (phoneLockStatus == true && !MainActivity.isActivityActive) {
-                        Intent i = new Intent(context, MainActivity.class);
-                        //i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        i.addCategory(Intent.CATEGORY_LAUNCHER);
-                        i.setAction(Intent.ACTION_MAIN);
-                        context.startActivity(i);
-                        Log.e(LockScreenReceiver.class.getSimpleName(), "Starting Activity because PhoneLockStatus was: " + phoneLockStatus);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
-        } **/
 
         boolean isPhoneLocked = PhoneLockStatusService.getInstance().isPhoneLocked();
         if(isPhoneLocked && !MainActivity.isActivityActive) {
             Intent i = new Intent(context, MainActivity.class);
-            //i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             i.addCategory(Intent.CATEGORY_LAUNCHER);
             i.setAction(Intent.ACTION_MAIN);
             context.startActivity(i);
-            Log.e(LockScreenReceiver.class.getSimpleName(), "Starting Activity because PhoneLockStatus was: " + isPhoneLocked);
         }
     }
 }
