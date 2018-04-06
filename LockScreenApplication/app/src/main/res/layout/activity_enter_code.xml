@@ -47,6 +47,16 @@
         android:textAlignment="center"
         android:textSize="18sp"
         android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/SignOut"
+        android:layout_width="172dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="101dp"
+        android:onClick="logOut"
+        android:text="Button" />
 </RelativeLayout>
 
 

@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.aau.thesis.lockscreenapplication.R;
-import com.aau.thesis.lockscreenapplication.helper.LockScreenService;
 import com.aau.thesis.lockscreenapplication.model.Phone;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

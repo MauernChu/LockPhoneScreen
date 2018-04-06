@@ -26,17 +26,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="com.aau.thesis.lockscreenapplication.helper.LockScreenService" />
-        <receiver
-            android:name="com.aau.thesis.lockscreenapplication.helper.LockScreenReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.SCREEN_OFF" />
-                <action android:name="android.intent.action.SCREEN_ON" />
-                <action android:name="android.intent.action.USER_PRESENT" />
-            </intent-filter>
-        </receiver>
 
         <activity
             android:name="com.aau.thesis.lockscreenapplication.presenter.LoginActivity"
@@ -45,7 +34,8 @@
         <activity
             android:name="com.aau.thesis.lockscreenapplication.presenter.EnterCodeActivity"
             android:label="@string/title_activity_enter_code"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

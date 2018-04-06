@@ -162,33 +162,35 @@ public class EnterCodeActivity extends BaseActivity {
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
-        phoneId = firebaseAuth.getCurrentUser().getUid();
-        phoneLockListID = databaseUnlockIdentifier.push().getKey();
-        phoneLockReason = "Home key";
-        timePhoneWasUnlocked = "";
-        UnlockPhoneList unlockPhoneIdentifier = new UnlockPhoneList(phoneLockListID, phoneLockReason, timePhoneWasUnlocked);
-        databaseUnlockIdentifier.child(phoneId).child(phoneLockListID).setValue(unlockPhoneIdentifier);
-        databaseUnlockIdentifier.child(phoneId).child(phoneLockListID).child("timestamp").setValue(ServerValue.TIMESTAMP);
-        newTotalScoreInt = totalScoreInt - 1;
-        newTotalScoreString = Integer.toString(newTotalScoreInt);
-        databaseTotal.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                totalScoreString = dataSnapshot.getValue(String.class);
-                totalScoreInt = Integer.parseInt(totalScoreString);
-                newTotalScoreInt = totalScoreInt - 1;
-                newTotalScoreString = Integer.toString(newTotalScoreInt);
-                databaseTotal.setValue(newTotalScoreString);
-                databaseCodeEntered.setValue("0");
-                databasePhone.child(phoneId).child("PhoneLockStatus").setValue(false);
-            }
+        if(firebaseAuth.getCurrentUser() != null) {
+            phoneId = firebaseAuth.getCurrentUser().getUid();
+            phoneLockListID = databaseUnlockIdentifier.push().getKey();
+            phoneLockReason = "Home key";
+            timePhoneWasUnlocked = "";
+            UnlockPhoneList unlockPhoneIdentifier = new UnlockPhoneList(phoneLockListID, phoneLockReason, timePhoneWasUnlocked);
+            databaseUnlockIdentifier.child(phoneId).child(phoneLockListID).setValue(unlockPhoneIdentifier);
+            databaseUnlockIdentifier.child(phoneId).child(phoneLockListID).child("timestamp").setValue(ServerValue.TIMESTAMP);
+            newTotalScoreInt = totalScoreInt - 1;
+            newTotalScoreString = Integer.toString(newTotalScoreInt);
+            databaseTotal.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    totalScoreString = dataSnapshot.getValue(String.class);
+                    totalScoreInt = Integer.parseInt(totalScoreString);
+                    newTotalScoreInt = totalScoreInt - 1;
+                    newTotalScoreString = Integer.toString(newTotalScoreInt);
+                    databaseTotal.setValue(newTotalScoreString);
+                    databaseCodeEntered.setValue("0");
+                    databasePhone.child(phoneId).child("PhoneLockStatus").setValue(false);
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
-        finish();
+                }
+            });
+            finish();
+        }
     }
 
     @Override
@@ -201,5 +203,12 @@ public class EnterCodeActivity extends BaseActivity {
         }
     }
 
+    public void logOut(View view){
+        FirebaseAuth.getInstance().signOut();
+        finish();
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
 
+    }
 }

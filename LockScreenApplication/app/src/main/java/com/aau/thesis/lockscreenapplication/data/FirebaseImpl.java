@@ -83,11 +83,15 @@ public class FirebaseImpl implements DatabaseInterface {
         databasePhone.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                phoneId = getCurrentUserPhoneId();
-                isPhoneLocked = dataSnapshot.child(phoneId).child("PhoneLockStatus").getValue(Boolean.class);
-                PhoneLockStatusService.getInstance().setPhoneLocked(isPhoneLocked);
-                for(PhoneLockStatusListener listener : listeners) {
-                    listener.PhoneLockStatusChanged(isPhoneLocked);
+                if (firebaseAuth.getCurrentUser() != null) {
+                    phoneId = getCurrentUserPhoneId();
+                    DataSnapshot phoneLockStatusSnapshot = dataSnapshot.child(phoneId).child("PhoneLockStatus");
+                    if (phoneLockStatusSnapshot != null) {
+                    isPhoneLocked = phoneLockStatusSnapshot.getValue(Boolean.class);
+                        for (PhoneLockStatusListener listener : listeners) {
+                            listener.PhoneLockStatusChanged(isPhoneLocked);
+                        }
+                    }
                 }
             }
 
@@ -102,18 +106,7 @@ public class FirebaseImpl implements DatabaseInterface {
         listeners.add(listener);
     }
 
-
     private static DatabaseReference createDatabaseReferenceByName(String code) {
         return FirebaseDatabase.getInstance().getReference(code);
     }
-
 }
-
-
-/**
- * Authentification methods
- */
-
-
-
-
