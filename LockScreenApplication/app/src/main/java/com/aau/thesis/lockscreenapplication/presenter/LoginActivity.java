@@ -21,14 +21,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import static com.aau.thesis.lockscreenapplication.helper.Utilities.makeFullScreen;
 
 public class LoginActivity extends Activity {
-    //EditText and button for storing phoneUser in database and login
-    EditText editPhoneName;
-    EditText editEmail;
-    EditText editPassword;
-    Button button_login;
+    private EditText editPhoneName;
+    private EditText editEmail;
+    private EditText editPassword;
+    private Button button_login;
 
-    DatabaseReference databasePhone;
-    DatabaseReference firebasePhoneLockStatus;
+    private DatabaseReference databasePhone;
     private FirebaseAuth firebaseAuthLogin;
     private ProgressDialog progressDialog;
 
@@ -38,8 +36,6 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
 
         makeFullScreen(LoginActivity.this);
-
-        firebasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
 
         firebaseAuthLogin = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);

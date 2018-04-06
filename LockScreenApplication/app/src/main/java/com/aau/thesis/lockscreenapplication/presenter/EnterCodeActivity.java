@@ -11,7 +11,6 @@ import android.widget.Toast;
 import com.aau.thesis.lockscreenapplication.R;
 import com.aau.thesis.lockscreenapplication.data.DatabaseInterface;
 import com.aau.thesis.lockscreenapplication.data.FirebaseImpl;
-import com.aau.thesis.lockscreenapplication.data.listeners.PhoneLockStatusListener;
 import com.aau.thesis.lockscreenapplication.model.UnlockPhoneList;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -82,21 +81,35 @@ public class EnterCodeActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         databaseInterface.listenToPhoneLockStatus();
+        fetchUnlockCodeChange();
+        fetchTotalScore();
+    }
+
+    @Override
+    public void PhoneLockStatusChanged(boolean isPhoneLocked) {
+        if (isPhoneLocked == false) {
+            Intent intent = new Intent(getApplicationContext(), this.getClass());
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("EXIT", true);
+            startActivity(intent);
+        }
+    }
 
 
+    private void fetchUnlockCodeChange() {
         databaseCode.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 unlockCode = dataSnapshot.getValue(String.class);
-
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
+    }
 
+
+    private void fetchTotalScore() {
         databaseTotal.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -110,6 +123,7 @@ public class EnterCodeActivity extends BaseActivity {
             }
         });
     }
+
 
     public void unlockScreen(View view) throws InterruptedException {
         checkEnteredCode(unlockCode);
@@ -190,16 +204,6 @@ public class EnterCodeActivity extends BaseActivity {
                 }
             });
             finish();
-        }
-    }
-
-    @Override
-    public void PhoneLockStatusChanged(boolean isPhoneLocked) {
-        if (isPhoneLocked == false) {
-            Intent intent = new Intent(getApplicationContext(), this.getClass());
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("EXIT", true);
-            startActivity(intent);
         }
     }
 

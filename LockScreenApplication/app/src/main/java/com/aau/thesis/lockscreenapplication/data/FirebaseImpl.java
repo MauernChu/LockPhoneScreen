@@ -15,17 +15,12 @@ import java.util.List;
 public class FirebaseImpl implements DatabaseInterface {
     private List<PhoneLockStatusListener> listeners = new ArrayList<PhoneLockStatusListener>();
 
-    DatabaseReference databasePhone;
-    DatabaseReference phoneLockStatus;
-    String phoneId;
-    boolean isPhoneLocked = false;
-    FirebaseAuth firebaseAuth;
+    private DatabaseReference databasePhone;
+    private DatabaseReference phoneLockStatus;
+    private String phoneId;
+    private boolean isPhoneLocked = false;
+    private FirebaseAuth firebaseAuth;
 
-    /**
-     * Method for creating DatabaseReferences to database
-     *
-     * @return DatabaseReference
-     */
     @Override
     public DatabaseReference createDatabaseReferenceToPhoneLockStatus() {
         return createDatabaseReferenceByName("PhoneLockStatus");
@@ -87,7 +82,7 @@ public class FirebaseImpl implements DatabaseInterface {
                     phoneId = getCurrentUserPhoneId();
                     DataSnapshot phoneLockStatusSnapshot = dataSnapshot.child(phoneId).child("PhoneLockStatus");
                     if (phoneLockStatusSnapshot != null) {
-                    isPhoneLocked = phoneLockStatusSnapshot.getValue(Boolean.class);
+                        isPhoneLocked = phoneLockStatusSnapshot.getValue(Boolean.class);
                         for (PhoneLockStatusListener listener : listeners) {
                             listener.PhoneLockStatusChanged(isPhoneLocked);
                         }
