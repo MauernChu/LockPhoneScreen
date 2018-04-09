@@ -63,7 +63,7 @@ public class LoginActivity extends Activity {
         final String phoneName = editPhoneName.getText().toString().trim();
         String email = editEmail.getText().toString().trim();
         String password = editPassword.getText().toString().trim();
-        final Boolean phoneLockStatus = false;
+        //final Boolean phoneLockStatus = false;
         progressDialog.setMessage("Signing up...");
         progressDialog.show();
         firebaseAuthLogin.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -71,10 +71,10 @@ public class LoginActivity extends Activity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     String phoneId = firebaseAuthLogin.getCurrentUser().getUid();
-                    Phone dbPhone = new Phone(phoneId, phoneName, phoneLockStatus);
+                    Phone dbPhone = new Phone(phoneId, phoneName);
                     DatabaseReference databaseCurrentUser = databasePhone.child(phoneId);
                     databaseCurrentUser.child("Name").setValue(dbPhone.getPhoneName());
-                    databaseCurrentUser.child("PhoneLockStatus").setValue(dbPhone.getPhoneLockStatus());
+                  //  databaseCurrentUser.child("PhoneLockStatus").setValue(dbPhone.getPhoneLockStatus());
                     progressDialog.dismiss();
                     Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
                     mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

@@ -70,11 +70,10 @@ public class EnterCodeActivity extends BaseActivity {
         databasePhoneLockStatus = databaseInterface.createDatabaseReferenceToPhoneLockStatus();
         databaseCode = databaseInterface.createDatabaseReferenceToCode();
         databaseTotal = databaseInterface.createDatabaseReferenceToTotal();
-        databasePhone = databaseInterface.createDatabaseReferenceToPhone();
+        //databasePhone = databaseInterface.createDatabaseReferenceToPhone();
         databaseUnlockIdentifier = databaseInterface.createDatabaseReferenceToUnlockIdentifier();
         databaseCodeEntered = databaseInterface.createDatabaseReferenceToCodeEntered();
     }
-
 
 
     @Override
@@ -86,12 +85,19 @@ public class EnterCodeActivity extends BaseActivity {
     }
 
     @Override
-    public void PhoneLockStatusChanged(boolean isPhoneLocked) {
-        if (isPhoneLocked == false) {
-            Intent intent = new Intent(getApplicationContext(), this.getClass());
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("EXIT", true);
-            startActivity(intent);
+    public void PhoneLockStatusChanged(boolean phoneLockStatusToString) {
+        if (firebaseAuth.getCurrentUser() != null) {
+            if (!phoneLockStatusToString) {
+                Intent intent = new Intent(getApplicationContext(), this.getClass());
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("EXIT", true);
+                startActivity(intent);
+            } else if (phoneLockStatusToString && !MainActivity.isActivityActive) {
+                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                i.addCategory(Intent.CATEGORY_LAUNCHER);
+                i.setAction(Intent.ACTION_MAIN);
+                startActivity(i);
+            }
         }
     }
 
@@ -102,6 +108,7 @@ public class EnterCodeActivity extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 unlockCode = dataSnapshot.getValue(String.class);
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
@@ -134,7 +141,7 @@ public class EnterCodeActivity extends BaseActivity {
         if (unlockCode.equals(databaseCode)) {
             addToTotalScore();
             addUnlockPhoneIdentifier();
-            changeUnlockPhoneStatus();
+            //changeUnlockPhoneStatus();
             changeCodeEntered();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -176,7 +183,7 @@ public class EnterCodeActivity extends BaseActivity {
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
-        if(firebaseAuth.getCurrentUser() != null) {
+        if (firebaseAuth.getCurrentUser() != null) {
             phoneId = firebaseAuth.getCurrentUser().getUid();
             phoneLockListID = databaseUnlockIdentifier.push().getKey();
             phoneLockReason = "Home key";
@@ -195,7 +202,7 @@ public class EnterCodeActivity extends BaseActivity {
                     newTotalScoreString = Integer.toString(newTotalScoreInt);
                     databaseTotal.setValue(newTotalScoreString);
                     databaseCodeEntered.setValue("0");
-                    databasePhone.child(phoneId).child("PhoneLockStatus").setValue(false);
+                   // databasePhone.child(phoneId).child("PhoneLockStatus").setValue(false);
                 }
 
                 @Override
@@ -207,7 +214,7 @@ public class EnterCodeActivity extends BaseActivity {
         }
     }
 
-    public void logOut(View view){
+    public void logOut(View view) {
         FirebaseAuth.getInstance().signOut();
         finish();
         Intent intent = new Intent(this, LoginActivity.class);

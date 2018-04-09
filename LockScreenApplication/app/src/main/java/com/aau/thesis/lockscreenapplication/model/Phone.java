@@ -7,13 +7,12 @@ package com.aau.thesis.lockscreenapplication.model;
 public class Phone {
     private String phoneId;
     private String phoneName;
-    private Boolean phoneLockStatus;
+   // private Boolean phoneLockStatus;
 
 
-    public Phone(String phoneId, String phoneName, Boolean phoneLockStatus) {
+    public Phone(String phoneId, String phoneName) {
         this.phoneId = phoneId;
         this.phoneName = phoneName;
-        this.phoneLockStatus = phoneLockStatus;
     }
 
     public String getPhoneId() {
@@ -32,11 +31,11 @@ public class Phone {
         this.phoneName = phoneName;
     }
 
-    public Boolean getPhoneLockStatus() {
+  /*  public Boolean getPhoneLockStatus() {
         return phoneLockStatus;
     }
 
     public void setPhoneLockStatus(Boolean phoneLockStatus) {
         this.phoneLockStatus = phoneLockStatus;
-    }
+    }*/
 }

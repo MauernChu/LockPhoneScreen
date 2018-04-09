@@ -58,7 +58,7 @@ public class MainActivity extends Activity implements PhoneLockStatusListener {
 
         firebaseAuth = databaseInterface.createFirebaseAuth();
         databaseTotal = databaseInterface.createDatabaseReferenceToTotal();
-        databasePhone = databaseInterface.createDatabaseReferenceToPhone();
+        // databasePhone = databaseInterface.createDatabaseReferenceToPhone();
         databaseUnlockIdentifier = databaseInterface.createDatabaseReferenceToUnlockIdentifier();
         databaseCodeEntered = databaseInterface.createDatabaseReferenceToCodeEntered();
     }
@@ -78,13 +78,14 @@ public class MainActivity extends Activity implements PhoneLockStatusListener {
                     String id = currentUser.getUid();
                     setContentView(R.layout.activity_main);
                     makeFullScreen(MainActivity.this);
-                    databaseInterface.listenToPhoneLockStatus();
+
                 }
             }
         };
 
         isActivityActive = true;
         firebaseAuth.addAuthStateListener(authStateListener);
+        databaseInterface.listenToPhoneLockStatus();
     }
 
     @Override
@@ -128,7 +129,7 @@ public class MainActivity extends Activity implements PhoneLockStatusListener {
                     newTotalScoreString = Integer.toString(newTotalScoreInt);
                     databaseTotal.setValue(newTotalScoreString);
                     databaseCodeEntered.setValue("0");
-                    databasePhone.child(phoneId).child("PhoneLockStatus").setValue(false);
+                  //  databasePhone.child(phoneId).child("PhoneLockStatus").setValue(false);
                 }
 
                 @Override
@@ -141,14 +142,14 @@ public class MainActivity extends Activity implements PhoneLockStatusListener {
     }
 
     @Override
-    public void PhoneLockStatusChanged(boolean isPhoneLocked) {
+    public void PhoneLockStatusChanged(boolean phoneLockStatusToString) {
         if (firebaseAuth.getCurrentUser() != null) {
-            if (!isPhoneLocked) {
+            if (!phoneLockStatusToString) {
                 Intent intent = new Intent(getApplicationContext(), this.getClass());
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("EXIT", true);
                 startActivity(intent);
-            } else if (isPhoneLocked && !MainActivity.isActivityActive) {
+            } else if (phoneLockStatusToString && !MainActivity.isActivityActive) {
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 i.addCategory(Intent.CATEGORY_LAUNCHER);
                 i.setAction(Intent.ACTION_MAIN);

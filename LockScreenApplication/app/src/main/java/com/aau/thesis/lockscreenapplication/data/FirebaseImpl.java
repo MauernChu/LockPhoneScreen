@@ -19,7 +19,7 @@ public class FirebaseImpl implements DatabaseInterface {
     private DatabaseReference databasePhone;
     private DatabaseReference phoneLockStatus;
     private String phoneId;
-    private boolean isPhoneLocked = false;
+    private boolean phoneLockStatusToString;
     private FirebaseAuth firebaseAuth;
 
     protected FirebaseImpl() {
@@ -83,23 +83,24 @@ public class FirebaseImpl implements DatabaseInterface {
 
     @Override
     public void listenToPhoneLockStatus() {
-        databasePhone = createDatabaseReferenceToPhone();
+        //databasePhone = createDatabaseReferenceToPhone();
         phoneLockStatus = createDatabaseReferenceToPhoneLockStatus();
         firebaseAuth = createFirebaseAuth();
-        databasePhone.addValueEventListener(new ValueEventListener() {
+        phoneLockStatus.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (firebaseAuth.getCurrentUser() != null) {
-                    phoneId = getCurrentUserPhoneId();
-                    DataSnapshot phoneLockStatusSnapshot = dataSnapshot.child(phoneId).child("PhoneLockStatus");
-                    if (phoneLockStatusSnapshot != null) {
-                        isPhoneLocked = phoneLockStatusSnapshot.getValue(Boolean.class);
+                    phoneLockStatusToString = dataSnapshot.getValue(Boolean.class);
+                    // phoneId = getCurrentUserPhoneId();
+                    // DataSnapshot phoneLockStatusSnapshot = dataSnapshot.child(phoneId).child("PhoneLockStatus");
+                    //if (phoneLockStatusToString != null) {
+                        //  isPhoneLocked = phoneLockStatusSnapshot.getValue(Boolean.class);
                         for (PhoneLockStatusListener listener : listeners) {
-                            listener.PhoneLockStatusChanged(isPhoneLocked);
+                            listener.PhoneLockStatusChanged(phoneLockStatusToString);
                         }
                     }
                 }
-            }
+            //}
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
