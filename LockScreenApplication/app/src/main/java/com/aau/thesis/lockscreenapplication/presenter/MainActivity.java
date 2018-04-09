@@ -3,6 +3,7 @@ package com.aau.thesis.lockscreenapplication.presenter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.aau.thesis.lockscreenapplication.R;
@@ -51,7 +52,7 @@ public class MainActivity extends Activity implements PhoneLockStatusListener {
             return;
         }
 
-        databaseInterface = new FirebaseImpl();
+        databaseInterface = FirebaseImpl.getInstance();
         //databaseInterface.listenToPhoneLockStatus();
         databaseInterface.addListener(this);
 

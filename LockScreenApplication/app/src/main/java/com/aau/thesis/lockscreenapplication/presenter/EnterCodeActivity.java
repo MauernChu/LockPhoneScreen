@@ -64,7 +64,7 @@ public class EnterCodeActivity extends BaseActivity {
 
 
         //--------- Database Logic ---------
-        databaseInterface = new FirebaseImpl();
+        databaseInterface = FirebaseImpl.getInstance();
         databaseInterface.addListener(this);
         firebaseAuth = databaseInterface.createFirebaseAuth();
         databasePhoneLockStatus = databaseInterface.createDatabaseReferenceToPhoneLockStatus();

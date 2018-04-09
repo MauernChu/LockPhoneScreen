@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FirebaseImpl implements DatabaseInterface {
+    private static FirebaseImpl _instance = null;
     private List<PhoneLockStatusListener> listeners = new ArrayList<PhoneLockStatusListener>();
 
     private DatabaseReference databasePhone;
@@ -20,6 +21,16 @@ public class FirebaseImpl implements DatabaseInterface {
     private String phoneId;
     private boolean isPhoneLocked = false;
     private FirebaseAuth firebaseAuth;
+
+    protected FirebaseImpl() {
+    }
+
+    public static FirebaseImpl getInstance() {
+        if (_instance == null) {
+            _instance = new FirebaseImpl();
+        }
+        return _instance;
+    }
 
     @Override
     public DatabaseReference createDatabaseReferenceToPhoneLockStatus() {
