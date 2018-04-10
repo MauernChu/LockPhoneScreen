@@ -3,7 +3,6 @@ package com.aau.thesis.lockscreenapplication.presenter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.aau.thesis.lockscreenapplication.R;
@@ -35,7 +34,6 @@ public class MainActivity extends Activity implements PhoneLockStatusListener {
     private boolean occured;
 
     private DatabaseInterface databaseInterface;
-    private DatabaseReference databasePhone;
     private DatabaseReference databaseUnlockIdentifier;
     private DatabaseReference databaseTotal;
     private DatabaseReference databaseCodeEntered;
@@ -53,12 +51,10 @@ public class MainActivity extends Activity implements PhoneLockStatusListener {
         }
 
         databaseInterface = FirebaseImpl.getInstance();
-        //databaseInterface.listenToPhoneLockStatus();
         databaseInterface.addListener(this);
 
         firebaseAuth = databaseInterface.createFirebaseAuth();
         databaseTotal = databaseInterface.createDatabaseReferenceToTotal();
-        // databasePhone = databaseInterface.createDatabaseReferenceToPhone();
         databaseUnlockIdentifier = databaseInterface.createDatabaseReferenceToUnlockIdentifier();
         databaseCodeEntered = databaseInterface.createDatabaseReferenceToCodeEntered();
     }
@@ -94,21 +90,19 @@ public class MainActivity extends Activity implements PhoneLockStatusListener {
         isActivityActive = false;
     }
 
-    //If the back-button is pressed, it will just return to the application.
     @Override
     public void onBackPressed() {
         return; //Do nothing!
     }
 
 
-    //Method for entering the activity for entering the code to unlock.
     public void goToEnterCodeActivity(View view) throws InterruptedException {
         Intent intent = new Intent(this, EnterCodeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+
     }
 
-    //method for logging, when they push Home button or Recent apps button
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
@@ -128,8 +122,6 @@ public class MainActivity extends Activity implements PhoneLockStatusListener {
                     newTotalScoreInt = totalScoreInt - 1;
                     newTotalScoreString = Integer.toString(newTotalScoreInt);
                     databaseTotal.setValue(newTotalScoreString);
-                    databaseCodeEntered.setValue("0");
-                  //  databasePhone.child(phoneId).child("PhoneLockStatus").setValue(false);
                 }
 
                 @Override

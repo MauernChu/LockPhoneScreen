@@ -70,7 +70,6 @@ public class EnterCodeActivity extends BaseActivity {
         databasePhoneLockStatus = databaseInterface.createDatabaseReferenceToPhoneLockStatus();
         databaseCode = databaseInterface.createDatabaseReferenceToCode();
         databaseTotal = databaseInterface.createDatabaseReferenceToTotal();
-        //databasePhone = databaseInterface.createDatabaseReferenceToPhone();
         databaseUnlockIdentifier = databaseInterface.createDatabaseReferenceToUnlockIdentifier();
         databaseCodeEntered = databaseInterface.createDatabaseReferenceToCodeEntered();
     }
@@ -141,8 +140,6 @@ public class EnterCodeActivity extends BaseActivity {
         if (unlockCode.equals(databaseCode)) {
             addToTotalScore();
             addUnlockPhoneIdentifier();
-            //changeUnlockPhoneStatus();
-            changeCodeEntered();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.putExtra("EXIT", true);
@@ -170,15 +167,6 @@ public class EnterCodeActivity extends BaseActivity {
         databaseTotal.setValue(newTotalScoreString);
     }
 
-    public void changeUnlockPhoneStatus() {
-        phoneId = firebaseAuth.getCurrentUser().getUid();
-        Boolean phoneockStatus = false;
-        databasePhone.child(phoneId).child("PhoneLockStatus").setValue(phoneockStatus);
-    }
-
-    public void changeCodeEntered() {
-        databaseCodeEntered.setValue("0");
-    }
 
     @Override
     protected void onUserLeaveHint() {
@@ -201,8 +189,6 @@ public class EnterCodeActivity extends BaseActivity {
                     newTotalScoreInt = totalScoreInt - 1;
                     newTotalScoreString = Integer.toString(newTotalScoreInt);
                     databaseTotal.setValue(newTotalScoreString);
-                    databaseCodeEntered.setValue("0");
-                   // databasePhone.child(phoneId).child("PhoneLockStatus").setValue(false);
                 }
 
                 @Override

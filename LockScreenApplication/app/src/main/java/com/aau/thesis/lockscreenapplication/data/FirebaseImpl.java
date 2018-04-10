@@ -16,9 +16,7 @@ public class FirebaseImpl implements DatabaseInterface {
     private static FirebaseImpl _instance = null;
     private List<PhoneLockStatusListener> listeners = new ArrayList<PhoneLockStatusListener>();
 
-    private DatabaseReference databasePhone;
     private DatabaseReference phoneLockStatus;
-    private String phoneId;
     private boolean phoneLockStatusToString;
     private FirebaseAuth firebaseAuth;
 
@@ -83,7 +81,6 @@ public class FirebaseImpl implements DatabaseInterface {
 
     @Override
     public void listenToPhoneLockStatus() {
-        //databasePhone = createDatabaseReferenceToPhone();
         phoneLockStatus = createDatabaseReferenceToPhoneLockStatus();
         firebaseAuth = createFirebaseAuth();
         phoneLockStatus.addValueEventListener(new ValueEventListener() {
@@ -91,16 +88,11 @@ public class FirebaseImpl implements DatabaseInterface {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (firebaseAuth.getCurrentUser() != null) {
                     phoneLockStatusToString = dataSnapshot.getValue(Boolean.class);
-                    // phoneId = getCurrentUserPhoneId();
-                    // DataSnapshot phoneLockStatusSnapshot = dataSnapshot.child(phoneId).child("PhoneLockStatus");
-                    //if (phoneLockStatusToString != null) {
-                        //  isPhoneLocked = phoneLockStatusSnapshot.getValue(Boolean.class);
-                        for (PhoneLockStatusListener listener : listeners) {
-                            listener.PhoneLockStatusChanged(phoneLockStatusToString);
-                        }
+                    for (PhoneLockStatusListener listener : listeners) {
+                        listener.PhoneLockStatusChanged(phoneLockStatusToString);
                     }
                 }
-            //}
+            }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
