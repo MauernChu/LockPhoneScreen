@@ -9,6 +9,7 @@ import com.aau.thesis.lockscreenapplication.R;
 import com.aau.thesis.lockscreenapplication.data.DatabaseInterface;
 import com.aau.thesis.lockscreenapplication.data.FirebaseImpl;
 import com.aau.thesis.lockscreenapplication.data.listeners.PhoneLockStatusListener;
+import com.aau.thesis.lockscreenapplication.helper.StickyService;
 import com.aau.thesis.lockscreenapplication.model.UnlockPhoneList;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -49,6 +50,7 @@ public class MainActivity extends Activity implements PhoneLockStatusListener {
             finish();
             return;
         }
+        startService(new Intent(this, StickyService.class));
 
         databaseInterface = FirebaseImpl.getInstance();
         databaseInterface.addListener(this);
