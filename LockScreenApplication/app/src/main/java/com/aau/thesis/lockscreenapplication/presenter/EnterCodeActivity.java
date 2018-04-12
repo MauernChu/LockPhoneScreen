@@ -91,11 +91,6 @@ public class EnterCodeActivity extends BaseActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("EXIT", true);
                 startActivity(intent);
-            } else if (phoneLockStatusToString && !MainActivity.isActivityActive) {
-                Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                i.addCategory(Intent.CATEGORY_LAUNCHER);
-                i.setAction(Intent.ACTION_MAIN);
-                startActivity(i);
             }
         }
     }
@@ -200,12 +195,12 @@ public class EnterCodeActivity extends BaseActivity {
         }
     }
 
-    public void logOut(View view) {
+  /*  public void logOut(View view) {
         FirebaseAuth.getInstance().signOut();
         finish();
         Intent intent = new Intent(this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
 
-    }
+    }*/
 }
