@@ -3,6 +3,7 @@ package com.aau.thesis.lockscreenapplication.presenter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.aau.thesis.lockscreenapplication.R;
@@ -13,9 +14,12 @@ import com.aau.thesis.lockscreenapplication.helper.StickyService;
 import com.aau.thesis.lockscreenapplication.model.UnlockPhoneList;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
@@ -39,6 +43,8 @@ public class MainActivity extends Activity implements PhoneLockStatusListener {
     private DatabaseReference databaseTotal;
     private DatabaseReference databaseCodeEntered;
 
+    DatabaseReference databaseTestPhone;
+
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
 
@@ -59,6 +65,7 @@ public class MainActivity extends Activity implements PhoneLockStatusListener {
         databaseTotal = databaseInterface.createDatabaseReferenceToTotal();
         databaseUnlockIdentifier = databaseInterface.createDatabaseReferenceToUnlockIdentifier();
         databaseCodeEntered = databaseInterface.createDatabaseReferenceToCodeEntered();
+        databaseTestPhone = FirebaseDatabase.getInstance().getReference("Phone");
     }
 
     @Override
@@ -76,6 +83,7 @@ public class MainActivity extends Activity implements PhoneLockStatusListener {
                     String id = currentUser.getUid();
                     setContentView(R.layout.activity_main);
                     makeFullScreen(MainActivity.this);
+
 
                 }
             }

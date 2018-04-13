@@ -32,6 +32,7 @@
         <receiver android:name=".helper.RestartServiceReceiver">
             <intent-filter>
                 <action android:name="YouWillNeverKillMe"></action>
+
             </intent-filter>
         </receiver>
 

@@ -23,7 +23,7 @@ public class StickyService extends Service {
         return null;
     }
 
- /*   public void onCreate() {
+    public void onCreate() {
         KeyguardManager.KeyguardLock key;
         KeyguardManager km = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
 
@@ -37,13 +37,14 @@ public class StickyService extends Service {
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_BOOT_COMPLETED);
         filter.addAction(Intent.ACTION_USER_PRESENT);
+        filter.addAction(Intent.ACTION_TIME_TICK);
 
         //Set up a receiver to listen for the Intents in this Service
         receiver = new RestartServiceReceiver();
         registerReceiver(receiver, filter);
 
         super.onCreate();
-    }*/
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {

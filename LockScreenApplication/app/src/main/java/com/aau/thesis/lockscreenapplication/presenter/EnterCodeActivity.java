@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
@@ -61,6 +62,8 @@ public class EnterCodeActivity extends BaseActivity {
         makeFullScreen(EnterCodeActivity.this);
         enter_code = (EditText) findViewById(R.id.enter_code);
         display_success = (TextView) findViewById(R.id.display_success);
+
+       databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
 
 
         //--------- Database Logic ---------
@@ -135,6 +138,7 @@ public class EnterCodeActivity extends BaseActivity {
         if (unlockCode.equals(databaseCode)) {
             addToTotalScore();
             addUnlockPhoneIdentifier();
+            changeName();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.putExtra("EXIT", true);
@@ -144,6 +148,12 @@ public class EnterCodeActivity extends BaseActivity {
             toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
             toast.show();
         }
+    }
+
+    public void changeName() {
+        phoneId = firebaseAuth.getCurrentUser().getUid();
+        String changeName = "Hmette";
+        databasePhone.child(phoneId).child("Name").setValue(changeName);
     }
 
     public void addUnlockPhoneIdentifier() {
