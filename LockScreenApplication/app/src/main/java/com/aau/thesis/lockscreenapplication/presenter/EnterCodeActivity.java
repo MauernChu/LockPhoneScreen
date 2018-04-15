@@ -77,7 +77,6 @@ public class EnterCodeActivity extends BaseActivity {
         databaseCodeEntered = databaseInterface.createDatabaseReferenceToCodeEntered();
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();

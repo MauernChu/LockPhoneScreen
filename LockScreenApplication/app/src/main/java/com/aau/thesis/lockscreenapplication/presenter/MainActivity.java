@@ -3,30 +3,29 @@ package com.aau.thesis.lockscreenapplication.presenter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.aau.thesis.lockscreenapplication.R;
 import com.aau.thesis.lockscreenapplication.data.DatabaseInterface;
 import com.aau.thesis.lockscreenapplication.data.FirebaseImpl;
 import com.aau.thesis.lockscreenapplication.data.listeners.PhoneLockStatusListener;
+import com.aau.thesis.lockscreenapplication.handlers.exception.UncaughtExceptionHandler;
 import com.aau.thesis.lockscreenapplication.helper.StickyService;
 import com.aau.thesis.lockscreenapplication.model.UnlockPhoneList;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import static com.aau.thesis.lockscreenapplication.helper.Utilities.makeFullScreen;
 
 public class MainActivity extends Activity implements PhoneLockStatusListener {
     public static boolean isActivityActive = true;
+
 
     private String phoneId;
     private String phoneLockListID;
@@ -43,14 +42,13 @@ public class MainActivity extends Activity implements PhoneLockStatusListener {
     private DatabaseReference databaseTotal;
     private DatabaseReference databaseCodeEntered;
 
-    DatabaseReference databaseTestPhone;
-
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         occured = false;
         if (getIntent().getBooleanExtra("EXIT", false)) {
             finish();
@@ -65,7 +63,20 @@ public class MainActivity extends Activity implements PhoneLockStatusListener {
         databaseTotal = databaseInterface.createDatabaseReferenceToTotal();
         databaseUnlockIdentifier = databaseInterface.createDatabaseReferenceToUnlockIdentifier();
         databaseCodeEntered = databaseInterface.createDatabaseReferenceToCodeEntered();
-        databaseTestPhone = FirebaseDatabase.getInstance().getReference("Phone");
+
+        RestartApplicationAfterCrash();
+        RegisterToFirebaseMessagingTopic();
+    }
+
+    private void RegisterToFirebaseMessagingTopic() {
+        FirebaseMessaging.getInstance().subscribeToTopic("dog");
+    }
+
+    private void RestartApplicationAfterCrash() {
+        Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler(this));
+        if (getIntent().getBooleanExtra("crash", false)) {
+            Toast.makeText(this, "App restarted after crash", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -78,18 +89,14 @@ public class MainActivity extends Activity implements PhoneLockStatusListener {
                 if (firebaseAuth.getCurrentUser() == null) {
                     Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
                     startActivity(loginIntent);
-                } else {
-                    FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-                    String id = currentUser.getUid();
+                } else{
+                    isActivityActive = true;
                     setContentView(R.layout.activity_main);
                     makeFullScreen(MainActivity.this);
-
-
                 }
             }
         };
 
-        isActivityActive = true;
         firebaseAuth.addAuthStateListener(authStateListener);
         databaseInterface.listenToPhoneLockStatus();
     }
@@ -110,7 +117,6 @@ public class MainActivity extends Activity implements PhoneLockStatusListener {
         Intent intent = new Intent(this, EnterCodeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-
     }
 
     @Override

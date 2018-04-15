@@ -15,35 +15,47 @@
         android:icon="@drawable/ic_launcher_background"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
-
         <activity
-            android:name="com.aau.thesis.lockscreenapplication.presenter.MainActivity"
+            android:name=".presenter.MainActivity"
             android:label="@string/app_name"
             android:noHistory="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <service android:name=".helper.StickyService"></service>
+        <service android:name=".helper.StickyService" />
+        <service android:name=".firebase.cloudmessaging.TokenFetcherService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".firebase.cloudmessaging.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
 
         <receiver android:name=".helper.RestartServiceReceiver">
             <intent-filter>
-                <action android:name="YouWillNeverKillMe"></action>
-
+                <action android:name="YouWillNeverKillMe" />
             </intent-filter>
         </receiver>
 
         <activity
-            android:name="com.aau.thesis.lockscreenapplication.presenter.LoginActivity"
+            android:name=".presenter.LoginActivity"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.aau.thesis.lockscreenapplication.presenter.EnterCodeActivity"
+            android:name=".presenter.EnterCodeActivity"
             android:label="@string/title_activity_enter_code"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>
