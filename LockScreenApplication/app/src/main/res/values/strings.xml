@@ -1,9 +1,8 @@
 <resources>
-    <string name="app_name">LockScreen</string>
+    <string name="app_name">Happy Dog</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="button_entercodepage">Unlock</string>
-
 
     <string name="title_activity_enter_code">EnterCodeActivity</string>
     <string name="text_password">Enter password</string>

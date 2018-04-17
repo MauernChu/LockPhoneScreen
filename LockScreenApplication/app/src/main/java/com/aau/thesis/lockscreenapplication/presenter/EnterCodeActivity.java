@@ -137,7 +137,6 @@ public class EnterCodeActivity extends BaseActivity {
         if (unlockCode.equals(databaseCode)) {
             addToTotalScore();
             addUnlockPhoneIdentifier();
-            changeName();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.putExtra("EXIT", true);
@@ -149,11 +148,6 @@ public class EnterCodeActivity extends BaseActivity {
         }
     }
 
-    public void changeName() {
-        phoneId = firebaseAuth.getCurrentUser().getUid();
-        String changeName = "Hmette";
-        databasePhone.child(phoneId).child("Name").setValue(changeName);
-    }
 
     public void addUnlockPhoneIdentifier() {
         phoneId = firebaseAuth.getCurrentUser().getUid();

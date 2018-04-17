@@ -32,7 +32,7 @@
         android:layout_alignStart="@+id/button_unlock"
         android:layout_marginBottom="61dp"
         android:ems="10"
-        android:hint="Enter password"
+        android:hint="Enter code"
         android:inputType="textPersonName" />
 
     <TextView
